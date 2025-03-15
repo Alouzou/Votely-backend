@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -22,7 +23,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> createUser(@Valid @RequestBody UserDTO userDTO) {
+    public ResponseEntity<?> createUser(@Validated(UserDTO.OnCreate.class) @RequestBody UserDTO userDTO) {
         User createdUser = userService.createUser(
                 userDTO.getUsername(),
                 userDTO.getEmail(),
@@ -33,6 +34,21 @@ public class UserController {
         response.put("message", "Utilisateur enregistré avec succès !");
         response.put("user", UserDTO.fromEntity(createdUser));
         return ResponseEntity.ok(response);
+    }
+
+    //    @PatchMapping("/modify/{id}")
+//    public ResponseEntity<UserDTO> modifyUser(
+//            @PathVariable("id") Long id,
+//            @Valid @RequestBody Map<String, Object> updates) {
+//        User updatedUser = userService.modifyUser(id, updates);
+//        return ResponseEntity.ok(UserDTO.fromEntity(updatedUser));
+//    }
+    @PatchMapping("/modify/{id}")
+    public ResponseEntity<UserDTO> modifyUser(
+            @PathVariable("id") Long id,
+            @Validated(UserDTO.OnUpdate.class) @RequestBody UserDTO userDTO) {
+        User updatedUser = userService.modifyUser(id, userDTO);
+        return ResponseEntity.ok(UserDTO.fromEntity(updatedUser));
     }
 
     @DeleteMapping("/delete/{userId}")
@@ -54,7 +70,7 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping
+    @GetMapping("/email")
     public ResponseEntity<User> getUserByEmail(@RequestParam String email) {
         return userService.getUserByEmail(email)
                 .map(ResponseEntity::ok)

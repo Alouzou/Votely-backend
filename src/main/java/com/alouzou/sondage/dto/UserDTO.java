@@ -7,18 +7,29 @@ import lombok.Builder;
 import lombok.Data;
 import jakarta.validation.constraints.*;
 
+
 @Data
 @Builder
 public class UserDTO {
+
+    public interface OnCreate {};
+    public interface OnUpdate {};
+
+
     private Long id;
+
+    @NotBlank(groups = OnCreate.class, message = "Le nom d'utilisateur est obligatoire.")
     private String username;
+
+    @NotBlank(groups = OnCreate.class, message = "L'email est obligatoire.")
+    @Email(groups = {OnCreate.class, OnUpdate.class}, message = "Format d'email invalide.")
     private String email;
 
-    @NotBlank(message = "Le mot de passe est obligatoire.")
-    @Size(min = 8, message = "Le mot de passe doit contenir au moins 8 caractères.")
-    @Pattern(regexp = ".*[A-Z].*", message = "Le mot de passe doit contenir au moins une majuscule.")
-    @Pattern(regexp = ".*\\d.*", message = "Le mot de passe doit contenir au moins un chiffre.")
-    @Pattern(regexp = ".*[!@#$%^&*].*", message = "Le mot de passe doit contenir au moins un caractère spécial (!@#$%^&*).")
+    @NotBlank(groups = OnCreate.class, message = "Le mot de passe est obligatoire.")
+    @Size(groups = {OnCreate.class, OnUpdate.class}, min = 8, message = "Le mot de passe doit contenir au moins 8 caractères.")
+    @Pattern(groups = {OnCreate.class, OnUpdate.class}, regexp = ".*[A-Z].*", message = "Le mot de passe doit contenir au moins une majuscule.")
+    @Pattern(groups = {OnCreate.class, OnUpdate.class}, regexp = ".*\\d.*", message = "Le mot de passe doit contenir au moins un chiffre.")
+    @Pattern(groups = {OnCreate.class, OnUpdate.class}, regexp = ".*[!@#$%^&*].*", message = "Le mot de passe doit contenir au moins un caractère spécial (!@#$%^&*).")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 

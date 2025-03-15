@@ -1,5 +1,6 @@
 package com.alouzou.sondage.services.Impl;
 
+import com.alouzou.sondage.dto.UserDTO;
 import com.alouzou.sondage.entities.Role;
 import com.alouzou.sondage.entities.RoleName;
 import com.alouzou.sondage.entities.User;
@@ -15,6 +16,7 @@ import org.springframework.security.crypto.encrypt.BytesEncryptor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -33,7 +35,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User createUser(String username, String email, String password, RoleName roleName) {
         log.info("Création d'un nouvel utilisateur : {}", email);
-        if(userRepository.findByEmail(email).isPresent()){
+        if (userRepository.findByEmail(email).isPresent()) {
             throw new RuntimeException("L'email est déjà utilisé !");
         }
 
@@ -62,7 +64,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean deleteUser(Long id) {
         log.info("Suppression de l'utilisateur avec l'ID : {}", id);
-        if(userRepository.existsById(id)){
+        if (userRepository.existsById(id)) {
             userRepository.deleteById(id);
             log.info("SUCCES - Suppression de l'utilisateur avec l'ID : {}", id);
             return true;
@@ -76,4 +78,43 @@ public class UserServiceImpl implements UserService {
         return userRepository.findById(id);
     }
 
+//    @Override
+//    public User modifyUser(Long id, Map<String, Object> updates) {
+//        User user = userRepository.findById(id)
+//                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+//
+//        updates.forEach((key, value) -> {
+//            switch (key) {
+//                case "username" -> user.setUsername((String) value);
+//                case "email" -> user.setEmail((String) value);
+//                case "password" -> user.setPassword(passwordEncoder.encode((String) value));
+//
+//            }
+//        });
+//        return userRepository.save(user);
+//    }
+
+    @Override
+    public User modifyUser(Long id, UserDTO userDTO) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+
+        if (userDTO.getUsername() != null) {
+            if (userDTO.getUsername().trim().isEmpty()) {
+                throw new IllegalArgumentException("Le username ne peut pas être vide");
+            }
+            user.setUsername(userDTO.getUsername());
+        }
+        if (userDTO.getEmail() != null) {
+            if (userDTO.getEmail().trim().isEmpty()) {
+                throw new IllegalArgumentException("L'email ne peut pas être vide.");
+            }
+            user.setEmail(userDTO.getEmail());
+        }
+        if (userDTO.getPassword() != null && !userDTO.getPassword().trim().isEmpty()) {
+            user.setPassword(userDTO.getPassword());
+        }
+
+        return userRepository.save(user);
+    }
 }
