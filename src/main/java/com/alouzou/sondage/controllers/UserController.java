@@ -70,9 +70,10 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/email")
-    public ResponseEntity<User> getUserByEmail(@RequestParam String email) {
+    @GetMapping()
+    public ResponseEntity<UserDTO> getUserByEmail(@RequestParam String email) {
         return userService.getUserByEmail(email)
+                .map(UserDTO::fromEntity)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }

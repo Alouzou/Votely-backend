@@ -19,5 +19,20 @@ public class UserRepositoryTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Test
+    public void testFindUserByEmailWithLog() {
+        User user = new User();
+        user.setUsername("testuser");
+        user.setEmail("test@example.com");
+        user.setPassword("password123");
 
+        userRepository.save(user);
+
+        logger.info("Enregistrement de l'utilisateur : {}", user.getEmail());
+
+        Optional<User> foundUser = userRepository.findUserByEmailWithLog("test@example.com");
+
+        assertTrue(foundUser.isPresent());
+        logger.info("Utilisateur trouvé : {}", foundUser.get().getUsername());
+    }
 }
