@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/users")
@@ -76,6 +77,15 @@ public class UserController {
                 .map(UserDTO::fromEntity)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/allUsersDto")
+    public ResponseEntity<List<UserDTO>> getAllUsersDto() {
+        return ResponseEntity.ok(userService.getAllUsers()
+                .stream()
+                .map(UserDTO::fromEntity)
+                .collect(Collectors.toList())
+        );
     }
 
     @GetMapping("/all")
