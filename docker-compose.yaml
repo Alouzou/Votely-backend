@@ -10,12 +10,8 @@ services:
       - "8080:8080"
     depends_on:
       - mysql-db
-    environment:
-      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
-      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
-      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
-
+    env_file:
+      - .env
   mysql-db:
     image: mysql:8.0
     container_name: sondage-mysql-db
