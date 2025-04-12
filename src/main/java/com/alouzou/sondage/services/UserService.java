@@ -3,6 +3,8 @@ package com.alouzou.sondage.services;
 import com.alouzou.sondage.dto.UserDTO;
 import com.alouzou.sondage.entities.RoleName;
 import com.alouzou.sondage.entities.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Map;
@@ -16,4 +18,5 @@ public interface UserService {
     Optional<User> getUserById(Long id);
 
     User modifyUser(Long id, UserDTO userDTO);
+    Page<UserDTO> listerUsers(Pageable pageable);
 }
