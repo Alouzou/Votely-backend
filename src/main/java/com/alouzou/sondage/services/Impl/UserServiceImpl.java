@@ -35,11 +35,11 @@ public class UserServiceImpl implements UserService {
     public User createUser(String username, String email, String password, RoleName roleName) {
         log.info("Création d'un nouvel utilisateur : {}", email);
         if (userRepository.findByEmail(email).isPresent()) {
-            throw new RuntimeException("L'email est déjà utilisé !");
+            throw new ResourceAlreadyUsedException("L'email est déjà utilisé !");
         }
 
         if(userRepository.findByUsername(username).isPresent()){
-            throw new IllegalArgumentException("Le username est dèja utilisé !");
+            throw new ResourceAlreadyUsedException("Le username est dèja utilisé !");
         }
         User user = new User();
         user.setUsername(username);
