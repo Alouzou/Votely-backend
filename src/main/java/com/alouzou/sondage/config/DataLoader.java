@@ -60,11 +60,13 @@ public class DataLoader implements CommandLineRunner {
 
         // Ajout des catégories
         Category categoryTech = categoryRepository.findByName("Technologie")
-                .orElseGet(() -> categoryRepository.save(new Category("Technologie")));
+                .orElseGet(() -> categoryRepository.save(new Category("Technologie", true)));
         Category categorySport = categoryRepository.findByName("Sport")
-                .orElseGet(() -> categoryRepository.save(new Category("Sport")));
+                .orElseGet(() -> categoryRepository.save(new Category("Sport", true)));
         Category categoryVoyage = categoryRepository.findByName("Voyage")
-                .orElseGet(() -> categoryRepository.save(new Category("Voyage")));
+                .orElseGet(() -> categoryRepository.save(new Category("Voyage", true)));
+        Category categoryGastronomie = categoryRepository.findByName("Gastronomie")
+                .orElseGet(() -> categoryRepository.save(new Category("Gastronomie", true)));
 
         log.info("✅ Catégories ajoutées !");
 
