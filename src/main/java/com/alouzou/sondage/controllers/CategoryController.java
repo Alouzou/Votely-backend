@@ -25,6 +25,15 @@ public class CategoryController {
         return ResponseEntity.ok(cat);
     }
 
+    @PatchMapping("/modify/{CategoryId}")
+    public ResponseEntity<Category> modifyCategory(
+            @PathVariable("CategoryId") Long id,
+            @RequestBody Category category){
+        Category cat = categoryService.modifyCategory(id, category);
+        return ResponseEntity.ok(cat);
+    }
+
+
     @GetMapping("/all")
     public ResponseEntity<List<Category>> findAll(){
         return ResponseEntity.ok(categoryService.findAll());
