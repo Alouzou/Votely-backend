@@ -5,6 +5,7 @@ import com.alouzou.sondage.exceptions.CategoryInactiveException;
 import com.alouzou.sondage.exceptions.EntityNotFoundException;
 import com.alouzou.sondage.exceptions.ResourceAlreadyUsedException;
 import com.alouzou.sondage.repositories.CategoryRepository;
+import com.alouzou.sondage.repositories.SurveyRepository;
 import com.alouzou.sondage.services.CategoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private SurveyRepository surveyRepository;
 
     @Override
     public Category createCategory(String nameCategory, Boolean isActive) {
@@ -71,6 +75,18 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Optional<Category> findById(Long id) {
         return categoryRepository.findById(id);
+    }
+
+    @Override
+    public void deleteById(Long id){
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Catégorie non trouvée avec l'ID : " + id));
+        if(!surveyRepository.findByCategory_Id(id).isEmpty()){
+            category.setActive(false);
+            categoryRepository.save(category);
+            throw new ResourceAlreadyUsedException("La catégorie avec l'id " + id + " est dèja utilisée dans d'autres sondages.\nLa catégorie a été désactivée");
+        }
+        categoryRepository.deleteById(id);
     }
 
 }

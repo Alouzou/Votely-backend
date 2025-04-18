@@ -14,6 +14,7 @@ import java.util.List;
 public interface SurveyRepository extends JpaRepository<Survey, Long> {
     Logger logger = LoggerFactory.getLogger(SurveyRepository.class);
 
+    List<Survey> findByCategory_Id(Long categoryId);
     List<Survey> findByCategory(Category category);
     List<Survey> findByCreator(User creator);
 

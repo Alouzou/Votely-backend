@@ -4,6 +4,7 @@ import com.alouzou.sondage.entities.Category;
 import com.alouzou.sondage.services.CategoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,6 +32,16 @@ public class CategoryController {
             @RequestBody Category category){
         Category cat = categoryService.modifyCategory(id, category);
         return ResponseEntity.ok(cat);
+    }
+
+    @DeleteMapping("/delete/{idCategory}")
+    public ResponseEntity<Void> deleteCategory(
+            @PathVariable("idCategory") Long id
+    ){
+        categoryService.deleteById(id);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
     }
 
 
