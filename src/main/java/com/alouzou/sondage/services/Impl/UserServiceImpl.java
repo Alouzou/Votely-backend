@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.List;
 import java.util.Optional;
@@ -87,18 +88,12 @@ public class UserServiceImpl implements UserService {
         log.info("Modificatoin de l'utilisateur : {}", id);
 
         if (userDTO.getUsername() != null) {
-            if (userDTO.getUsername().trim().isEmpty()) {
-                throw new IllegalArgumentException("Le username ne peut pas être vide");
-            }
             if (userRepository.findByUsername(userDTO.getUsername()).isPresent()) {
                 throw new ResourceAlreadyUsedException("Le username est déjà utilisé !");
             }
             user.setUsername(userDTO.getUsername());
         }
         if (userDTO.getEmail() != null) {
-            if (userDTO.getEmail().trim().isEmpty()) {
-                throw new IllegalArgumentException("L'email ne peut pas être vide.");
-            }
             if(userRepository.findByEmail(userDTO.getEmail()).isPresent()){
                 throw new ResourceAlreadyUsedException("L'email est déjà utilisé !");
             }
