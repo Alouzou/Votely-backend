@@ -99,12 +99,14 @@ public class UserServiceImpl implements UserService {
             if (userDTO.getEmail().trim().isEmpty()) {
                 throw new IllegalArgumentException("L'email ne peut pas être vide.");
             }
+            if(userRepository.findByEmail(userDTO.getEmail()).isPresent()){
+                throw new ResourceAlreadyUsedException("L'email est déjà utilisé !");
+            }
             user.setEmail(userDTO.getEmail());
         }
         if (userDTO.getPassword() != null && !userDTO.getPassword().trim().isEmpty()) {
             user.setPassword(userDTO.getPassword());
         }
-
         return userRepository.save(user);
     }
 
