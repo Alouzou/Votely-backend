@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @Slf4j
@@ -48,6 +49,11 @@ public class CategoryController {
     @GetMapping("/all")
     public ResponseEntity<List<Category>> findAll(){
         return ResponseEntity.ok(categoryService.findAll());
+    }
+
+    @GetMapping("/active")
+    public ResponseEntity<List<Category>> findAllActive(){
+        return ResponseEntity.ok(categoryService.findAllByIsActive());
     }
 
     @GetMapping("/{id}")

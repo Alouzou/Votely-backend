@@ -16,4 +16,5 @@ public interface CategoryService {
 
     Category modifyCategory(Long id, Category category);
     void deleteById(Long id);
+    List<Category> findAllByIsActive();
 }

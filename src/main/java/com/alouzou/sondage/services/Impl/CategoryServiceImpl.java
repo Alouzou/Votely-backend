@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -88,6 +89,12 @@ public class CategoryServiceImpl implements CategoryService {
             throw new ResourceAlreadyUsedException("La catégorie avec l'id " + id + " est dèja utilisée dans d'autres sondages.\nLa catégorie a été désactivée");
         }
         categoryRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Category> findAllByIsActive() {
+        return categoryRepository.findAllByIsActiveTrue()
+                .orElseThrow(() -> new EntityNotFoundException("Aucune catégorie n'a été trouvée"));
     }
 
 }
