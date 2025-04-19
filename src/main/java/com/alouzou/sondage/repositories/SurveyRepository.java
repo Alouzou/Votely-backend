@@ -9,11 +9,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface SurveyRepository extends JpaRepository<Survey, Long> {
     Logger logger = LoggerFactory.getLogger(SurveyRepository.class);
 
+    Optional<Survey> findByTitle(String title);
     List<Survey> findByCategory_Id(Long categoryId);
     List<Survey> findByCategory(Category category);
     List<Survey> findByCreator(User creator);

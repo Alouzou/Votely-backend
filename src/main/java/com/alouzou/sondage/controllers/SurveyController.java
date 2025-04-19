@@ -4,30 +4,27 @@ import com.alouzou.sondage.dto.SurveyDTO;
 import com.alouzou.sondage.entities.Survey;
 import com.alouzou.sondage.entities.User;
 import com.alouzou.sondage.services.SurveyService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("api/surveys")
+@RequestMapping("api/surveys/")
 public class SurveyController {
 
     @Autowired
     private SurveyService surveyService;
 
     @PostMapping("/create")
-    public ResponseEntity<SurveyDTO> createSurvey(@RequestBody SurveyDTO survey) {
-        Survey createdSurvey = surveyService.createSurvey(
-                survey.getTitle(),
-                survey.getDescription(),
-                survey.getCategoryId(),
-                new User(survey.getCreatorId())
-        );
-        return ResponseEntity.ok(SurveyDTO.fromEntity(createdSurvey));
+    public ResponseEntity<SurveyDTO> createSurvey(@Valid @RequestBody SurveyDTO surveyDTO) {
+        Survey createdSurvey = surveyService.createSurvey(surveyDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(SurveyDTO.fromEntity(createdSurvey));
     }
 
     @GetMapping("/{id}")
@@ -56,5 +53,16 @@ public class SurveyController {
                 .map(SurveyDTO::fromEntity)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(surveys);
+    }
+
+    @GetMapping("")
+    public ResponseEntity<List<SurveyDTO>> findAll(){
+        List<SurveyDTO> surveys = surveyService.findAll()
+                .stream()
+                .map(SurveyDTO::fromEntity)
+                .collect(Collectors.toList());
+
+        return ResponseEntity
+                .ok(surveys);
     }
 }
