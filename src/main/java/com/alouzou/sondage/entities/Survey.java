@@ -1,20 +1,35 @@
 package com.alouzou.sondage.entities;
 
 import jakarta.persistence.*;
-import org.aspectj.weaver.patterns.TypePatternQuestions;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
 @Table(name = "surveys")
+@EntityListeners(AuditingEntityListener.class)
 public class Survey {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String title;
-    private String description;
+
+    @CreatedDate
+    @Column(name = "createdAt", nullable = false, updatable = false )
+    private Instant createdAt;
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
 
     @ManyToOne
     @JoinColumn(name = "creator_id", nullable = false)
@@ -30,10 +45,15 @@ public class Survey {
     public Survey() {
     }
 
-    public Survey(Long id, String title, String description, User creator, Category category, List<Question> questions) {
+    public Survey(String title, User creator, Category category) {
+        this.title = title;
+        this.creator = creator;
+        this.category = category;
+    }
+
+    public Survey(Long id, String title, User creator, Category category, List<Question> questions) {
         this.id = id;
         this.title = title;
-        this.description = description;
         this.creator = creator;
         this.category = category;
         this.questions = questions;
@@ -43,9 +63,9 @@ public class Survey {
         this.id = id;
     }
 
-    public Survey(String title, String description, Category category, User creator) {
+    public Survey(String title, Category category, User creator) {
         this.title = title;
-        this.description = description;
+        //this.description = description;
         this.category = category;
         this.creator = creator;
     }
@@ -64,14 +84,6 @@ public class Survey {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public User getCreator() {
