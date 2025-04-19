@@ -11,7 +11,7 @@ public interface CategoryService {
 
     List<Category> findAll();
 
-    Optional<Category> findById(Long id);
+    Category findById(Long id);
     Category createCategory(String name, Boolean isActive);
 
     Category modifyCategory(Long id, Category category);

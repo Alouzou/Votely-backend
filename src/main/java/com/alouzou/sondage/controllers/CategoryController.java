@@ -52,9 +52,7 @@ public class CategoryController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Category> findById(@PathVariable Long id){
-
-        return categoryService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity
+                .ok(categoryService.findById(id));
     }
 }
