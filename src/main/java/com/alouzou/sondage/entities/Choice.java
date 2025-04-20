@@ -15,6 +15,7 @@ public class Choice {
     @JoinColumn(name = "question_id", nullable = false)
     private Question question;
 
+
     public Choice() {
     }
 
@@ -40,11 +41,11 @@ public class Choice {
         this.id = id;
     }
 
-    public String getchoiceText() {
+    public String getChoiceText() {
         return choiceText;
     }
 
-    public void setchoiceText(String choiceText) {
+    public void setChoiceText(String choiceText) {
         this.choiceText = choiceText;
     }
 

@@ -1,14 +1,10 @@
 package com.alouzou.sondage.config;
 
-import com.alouzou.sondage.entities.Category;
-import com.alouzou.sondage.entities.Role;
-import com.alouzou.sondage.entities.RoleName;
-import com.alouzou.sondage.entities.User;
+import com.alouzou.sondage.entities.*;
 import com.alouzou.sondage.repositories.CategoryRepository;
 import com.alouzou.sondage.repositories.RoleRepository;
 import com.alouzou.sondage.services.SurveyService;
 import com.alouzou.sondage.services.UserService;
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,13 +65,148 @@ public class DataLoader implements CommandLineRunner {
                 .orElseGet(() -> categoryRepository.save(new Category("Gastronomie", true)));
 
         log.info("✅ Catégories ajoutées !");
-
-        // Ajout des sondages
         User creator = userService.getUserByEmail("creator@example.com").orElseThrow();
-        surveyService.createSurvey("Quel est votre langage préféré ?", "Sondage sur les langages de programmation", categoryTech.getId(), creator);
-        surveyService.createSurvey("Votre sport favori ?", "Sondage sur le sport préféré des gens", categorySport.getId(), creator);
+//        Object[][] surveys = {
+//                // Titre général, catégorie, questions
+//                {
+//                        "Sondage sur les langages de programmation",
+//                        categoryTech.getId(),
+//                        new Question[] {
+//                                new Question("Quel est votre langage préféré ?", null),
+//                                new Question("Quel langage utilisez-vous au travail ?", null),
+//                                new Question("Quel langage souhaitez-vous apprendre ?", null)
+//                        }
+//                },
+//                {
+//                        "Sondage sur le sport préféré des gens",
+//                        categorySport.getId(),
+//                        new Question[] {
+//                                new Question("Quel est votre sport préféré ?", null),
+//                                new Question("Pratiquez-vous ce sport régulièrement ?", null),
+//                                new Question("Quel est le sport que vous aimeriez apprendre ?", null)
+//                        }
+//                },
+//                {
+//                        "Sondage sur la gastronomie du monde",
+//                        categoryGastronomie.getId(),
+//                        new Question[] {
+//                                new Question("Quel est votre plat préféré ?", null),
+//                                new Question("Aimez-vous cuisiner ?", null),
+//                                new Question("Quel type de cuisine aimez-vous ?", null)
+//                        }
+//                },
+//                {
+//                        "Sondage sur les destinations de voyage",
+//                        categoryVoyage.getId(),
+//                        new Question[] {
+//                                new Question("Quelle destination aimeriez-vous visiter ?", null),
+//                                new Question("Avez-vous déjà visité une destination exotique ?", null),
+//                                new Question("Préférez-vous la montagne ou la mer ?", null)
+//                        }
+//                },
+//                {
+//                        "Sondage sur les outils technologiques",
+//                        categoryTech.getId(),
+//                        new Question[] {
+//                                new Question("Quel IDE utilisez-vous ?", null),
+//                                new Question("Préférez-vous travailler sur frontend ou backend ?", null),
+//                                new Question("Quelle technologie trouvez-vous la plus intéressante ?", null)
+//                        }
+//                },
+//                {
+//                        "Sondage sur les films",
+//                        categoryGastronomie.getId(),
+//                        new Question[] {
+//                                new Question("Quel genre de film préférez-vous ?", null),
+//                                new Question("Quel film avez-vous vu récemment ?", null),
+//                                new Question("Avez-vous une recommandation de film ?", null)
+//                        }
+//                },
+//                {
+//                        "Sondage sur les préférences musicales",
+//                        categorySport.getId(),
+//                        new Question[] {
+//                                new Question("Quel genre de musique préférez-vous ?", null),
+//                                new Question("Assistez-vous à des concerts ?", null),
+//                                new Question("Quel est votre artiste préféré ?", null)
+//                        }
+//                },
+//                {
+//                        "Sondage sur l'IA et ses implications",
+//                        categoryTech.getId(),
+//                        new Question[] {
+//                                new Question("Quel impact pensez-vous que l'IA aura sur le travail ?", null),
+//                                new Question("Avez-vous des inquiétudes concernant l'IA ?", null),
+//                                new Question("Pensez-vous que l'IA peut remplacer les emplois humains ?", null)
+//                        }
+//                },
+//                {
+//                        "Sondage sur les jeux vidéo",
+//                        categorySport.getId(),
+//                        new Question[] {
+//                                new Question("Quel est votre jeu vidéo préféré ?", null),
+//                                new Question("Jouez-vous à des jeux vidéo en ligne ?", null),
+//                                new Question("Quel genre de jeu préférez-vous ?", null)
+//                        }
+//                },
+//                {
+//                        "Sondage sur les vacances et les loisirs",
+//                        categoryVoyage.getId(),
+//                        new Question[] {
+//                                new Question("Quel type de vacances préférez-vous ?", null),
+//                                new Question("Participez-vous à des activités de groupe pendant les vacances ?", null),
+//                                new Question("Préférez-vous des vacances actives ou détentes ?", null)
+//                        }
+//                },
+//                {
+//                        "Sondage sur les sports extrêmes",
+//                        categorySport.getId(),
+//                        new Question[] {
+//                                new Question("Pratiquez-vous des sports extrêmes ?", null),
+//                                new Question("Quel sport extrême aimeriez-vous essayer ?", null),
+//                                new Question("Quelles sont vos motivations pour pratiquer des sports extrêmes ?", null)
+//                        }
+//                },
+//                {
+//                        "Sondage sur les hobbies populaires",
+//                        categoryVoyage.getId(),
+//                        new Question[] {
+//                                new Question("Quel est votre hobby principal ?", null),
+//                                new Question("Quel hobby aimeriez-vous pratiquer ?", null),
+//                                new Question("Avez-vous des hobbies en dehors des loisirs classiques ?", null)
+//                        }
+//                },
+//                {
+//                        "Sondage sur les apps mobiles",
+//                        categoryTech.getId(),
+//                        new Question[] {
+//                                new Question("Quelle est votre application mobile préférée ?", null),
+//                                new Question("Combien d'applications utilisez-vous par jour ?", null),
+//                                new Question("Avez-vous une application mobile recommandée ?", null)
+//                        }
+//                },
+//                {
+//                        "Sondage sur les cuisines du monde",
+//                        categoryGastronomie.getId(),
+//                        new Question[] {
+//                                new Question("Quel est votre plat préféré dans la cuisine ?", null),
+//                                new Question("Préférez-vous cuisiner ou manger à l'extérieur ?", null),
+//                                new Question("Quelle cuisine du monde aimeriez-vous découvrir ?", null)
+//                        }
+//                }
+//        };
+        // Création de sondages à partir du tableau
+//        for (Object[] survey : surveys) {
+//            surveyService.createSurvey((String) survey[0], creator, (Long) survey[1], (List<Question>) survey[2]);
+//
+//            log.info("✅ Sondage créé : {}", survey[0]);
+//        }
+//        // Ajout des sondages
+//        User creator = userService.getUserByEmail("creator@example.com").orElseThrow();
+//        surveyService.createSurvey("Quel est votre langage préféré ?", "Sondage sur les langages de programmation", categoryTech.getId(), creator);
+//        surveyService.createSurvey("Votre sport favori ?", "Sondage sur le sport préféré des gens", categorySport.getId(), creator);
 
-        log.info("✅ Sondages créés !");
+//        log.info("✅ Sondages créés !");
 
 
     }

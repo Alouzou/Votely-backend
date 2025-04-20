@@ -27,12 +27,10 @@ public class ChoiceDTO {
     }
 
         public static ChoiceDTO fromEntity(Choice choice){
-        return new ChoiceDTO(choice.getchoiceText(), choice.getQuestion().getId());
+        return new ChoiceDTO(choice.getChoiceText(), choice.getQuestion().getId());
     }
 
     public static Choice toEntity(ChoiceDTO choiceDTO, Question question) {
-        return new Choice(choiceDTO.choiceText, question);
+        return new Choice(choiceDTO.getChoiceText(), question);
     }
-
-
 }
