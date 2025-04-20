@@ -9,7 +9,7 @@ public class Choice {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String text;
+    private String choiceText;
 
     @ManyToOne
     @JoinColumn(name = "question_id", nullable = false)
@@ -18,17 +18,17 @@ public class Choice {
     public Choice() {
     }
 
-    public Choice(Long id, String text, Question question) {
+    public Choice(Long id, String choiceText, Question question) {
         this.id = id;
-        this.text = text;
+        this.choiceText = choiceText;
         this.question = question;
     }
     public Choice(Long id) {
         this.id = id;
     }
 
-    public Choice(String text, Question question) {
-        this.text = text;
+    public Choice(String choiceText, Question question) {
+        this.choiceText = choiceText;
         this.question = question;
     }
 
@@ -40,12 +40,12 @@ public class Choice {
         this.id = id;
     }
 
-    public String getText() {
-        return text;
+    public String getchoiceText() {
+        return choiceText;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setchoiceText(String choiceText) {
+        this.choiceText = choiceText;
     }
 
     public Question getQuestion() {

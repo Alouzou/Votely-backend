@@ -12,7 +12,7 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String text;
+    private String questionText;
 
     @ManyToOne
     @JoinColumn(name = "survey_id", nullable = false)
@@ -26,7 +26,7 @@ public class Question {
 
     public Question(Long id, String text, Survey survey, List<Choice> choices) {
         this.id = id;
-        this.text = text;
+        this.questionText = text;
         this.survey = survey;
         this.choices = choices;
     }
@@ -35,7 +35,7 @@ public class Question {
     }
 
     public Question(String text, Survey survey) {
-        this.text = text;
+        this.questionText = text;
         this.survey = survey;
     }
 
@@ -47,12 +47,12 @@ public class Question {
         this.id = id;
     }
 
-    public String getText() {
-        return text;
+    public String getQuestionText() {
+        return questionText;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setQuestionText(String text) {
+        this.questionText = text;
     }
 
     public Survey getSurvey() {

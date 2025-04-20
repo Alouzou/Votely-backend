@@ -9,6 +9,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,12 +22,14 @@ public class SurveyDTO {
     @NotBlank(message = "Veuillez entrer le titre du sondage")
     private String title;
 
+    @Getter
     @NotNull(message = "Veuillez entrer le créateur du sondage")
     private Long creatorId;
 
+    @Getter
     @NotNull(message = "Veuillez entrer la catégorie du sondage")
     private Long categoryId;
-    //private List<QuestionDTO> questions;
+    private List<QuestionDTO> questions;
 
 
     public SurveyDTO() {
@@ -37,6 +40,13 @@ public class SurveyDTO {
         this.title = title;
         this.creatorId = creatorId;
         this.categoryId = categoryId;
+    }
+    public SurveyDTO(Long id, String title, Long creatorId, Long categoryId, List<QuestionDTO> questions) {
+        this.id = id;
+        this.title = title;
+        this.creatorId = creatorId;
+        this.categoryId = categoryId;
+        this.questions = questions;
     }
 
     public Survey toEntity(User creator, Category category) {
@@ -49,28 +59,19 @@ public class SurveyDTO {
     }
 
     public static SurveyDTO fromEntity(Survey survey) {
-        return new SurveyDTO(
-                survey.getId(),
-                survey.getTitle(),
-                survey.getCreator().getId(),
-                survey.getCategory().getId()
-        );
-    }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public Long getCreatorId() {
-        return creatorId;
-    }
-
-    public Long getCategoryId() {
-        return categoryId;
+        return SurveyDTO.builder()
+                .id(survey.getId())
+                .title(survey.getTitle())
+                .creatorId(survey.getCreator().getId())
+                .categoryId(survey.getCategory().getId())
+                .questions(
+                        survey.getQuestions()
+                                .stream()
+                                .map(QuestionDTO::fromEntity)
+                                .collect(Collectors.toList())
+                )
+                .build();
     }
 
 }
