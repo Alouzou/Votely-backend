@@ -4,6 +4,7 @@ import com.alouzou.sondage.dto.UserDTO;
 import com.alouzou.sondage.entities.Role;
 import com.alouzou.sondage.entities.RoleName;
 import com.alouzou.sondage.entities.User;
+import com.alouzou.sondage.exceptions.EntityNotFoundException;
 import com.alouzou.sondage.exceptions.ResourceAlreadyUsedException;
 import com.alouzou.sondage.repositories.RoleRepository;
 import com.alouzou.sondage.repositories.UserRepository;
@@ -16,8 +17,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 
 @Service
@@ -33,7 +36,7 @@ public class UserServiceImpl implements UserService {
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
-    public User createUser(String username, String email, String password, RoleName roleName) {
+    public User createUser(String username, String email, String password, Set<String> rolesNames) {
         log.info("Création d'un nouvel utilisateur : {}", email);
         if (userRepository.findByEmail(email).isPresent()) {
             throw new ResourceAlreadyUsedException("L'email est déjà utilisé !");
@@ -47,10 +50,18 @@ public class UserServiceImpl implements UserService {
         user.setEmail(email);
         user.setPassword(passwordEncoder.encode(password));
 
-        Role role = roleRepository.findByName(roleName).
-                orElseThrow(() -> new RuntimeException("Rôle non trouvé !"));
-        user.getRoles().add(role);
-
+        Set<Role> roles = new HashSet<>();
+        rolesNames.forEach(roleName -> {
+            try{
+                RoleName enumRoleName = RoleName.valueOf(roleName.toUpperCase());
+                Role role = roleRepository.findByName(enumRoleName)
+                        .orElseThrow(() -> new EntityNotFoundException("Rôle non trouvé : " + roleName));
+                roles.add(role);
+            }catch(IllegalArgumentException e){
+                throw new EntityNotFoundException("Rôle invalide : " + roleName);
+            }
+        });
+        user.setRoles(roles);
         return userRepository.save(user);
     }
 

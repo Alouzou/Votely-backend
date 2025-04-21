@@ -1,11 +1,16 @@
 package com.alouzou.sondage.dto;
 
+import com.alouzou.sondage.entities.Role;
+import com.alouzou.sondage.entities.RoleName;
 import com.alouzou.sondage.entities.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
 import jakarta.validation.constraints.*;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Data
@@ -33,6 +38,8 @@ public class UserDTO {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
+    private Set<String> roles;
+
     public static UserDTO fromEntity(User user) {
         if (user == null) {
             return null;
@@ -43,6 +50,10 @@ public class UserDTO {
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .password(user.getPassword())
+                .roles(user.getRoles()
+                        .stream()
+                        .map(role -> role.getName().name())
+                        .collect(Collectors.toSet()))
                 .build();
 
     }
@@ -57,9 +68,13 @@ public class UserDTO {
         user.setUsername(dto.getUsername());
         user.setEmail(dto.getEmail());
         user.setPassword(dto.getPassword());
-
+        if(dto.getRoles() != null){
+            Set<Role> roles = dto.getRoles().stream()
+                    .map(roleName -> new Role(RoleName.valueOf(roleName)))
+                    .collect(Collectors.toSet());
+            user.setRoles(roles);
+        }
         return user;
-
     }
 
 }

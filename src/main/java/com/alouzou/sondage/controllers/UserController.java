@@ -1,8 +1,11 @@
 package com.alouzou.sondage.controllers;
 
 import com.alouzou.sondage.dto.UserDTO;
+import com.alouzou.sondage.entities.Role;
 import com.alouzou.sondage.entities.RoleName;
 import com.alouzou.sondage.entities.User;
+import com.alouzou.sondage.exceptions.EntityNotFoundException;
+import com.alouzou.sondage.repositories.RoleRepository;
 import com.alouzou.sondage.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,7 +17,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/users")
@@ -28,7 +33,7 @@ public class UserController {
                 userDTO.getUsername(),
                 userDTO.getEmail(),
                 userDTO.getPassword(),
-                RoleName.ROLE_USER
+                userDTO.getRoles()
         );
         Map<String, Object> response = new HashMap<>();
         response.put("message", "Utilisateur enregistré avec succès !");

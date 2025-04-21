@@ -32,6 +32,7 @@ build/
 ### VS Code ###
 .vscode/
 
+./src/main/java/com/alouzou/sondage/config/DataLoader.java
 todo.md
 ./src/main/resources/application.yml
 .env

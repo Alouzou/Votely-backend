@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.util.Set;
+
 @Component
 public class DataLoader implements CommandLineRunner {
 
@@ -38,19 +40,19 @@ public class DataLoader implements CommandLineRunner {
             log.info("✅ Rôles ajoutés !");
         }
 
-        // Ajout des utilisateurs
+         //Ajout des utilisateurs
         if (userService.getUserByEmail("admin@example.com").isEmpty()) {
-            userService.createUser("admin", "admin@example.com", "password", RoleName.ROLE_ADMIN);
+            userService.createUser("admin", "admin@example.com", "password", Set.of(RoleName.ROLE_ADMIN.name(), RoleName.ROLE_CREATOR.name(), RoleName.ROLE_USER.name()));
             log.info("✅ Admin créé !");
         }
 
         if (userService.getUserByEmail("user@example.com").isEmpty()) {
-            userService.createUser("user1", "user@example.com", "password", RoleName.ROLE_USER);
+            userService.createUser("user1", "user@example.com", "password", Set.of(RoleName.ROLE_USER.name()));
             log.info("✅ Utilisateur créé !");
         }
 
         if (userService.getUserByEmail("creator@example.com").isEmpty()) {
-            userService.createUser("creator1", "creator@example.com", "password", RoleName.ROLE_CREATOR);
+            userService.createUser("creator1", "creator@example.com", "password", Set.of(RoleName.ROLE_CREATOR.name(), RoleName.ROLE_USER.name()));
             log.info("✅ Créateur de sondages ajouté !");
         }
 
@@ -64,8 +66,8 @@ public class DataLoader implements CommandLineRunner {
         Category categoryGastronomie = categoryRepository.findByName("Gastronomie")
                 .orElseGet(() -> categoryRepository.save(new Category("Gastronomie", true)));
 
-        log.info("✅ Catégories ajoutées !");
-        User creator = userService.getUserByEmail("creator@example.com").orElseThrow();
+        //log.info("✅ Catégories ajoutées !");
+        //User creator = userService.getUserByEmail("creator@example.com").orElseThrow();
 //        Object[][] surveys = {
 //                // Titre général, catégorie, questions
 //                {

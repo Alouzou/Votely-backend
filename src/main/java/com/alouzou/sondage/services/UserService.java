@@ -9,9 +9,10 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 public interface UserService {
-    User createUser(String username, String email, String password, RoleName roleName);
+    User createUser(String username, String email, String password, Set<String> rolesNames);
     Optional<User> getUserByEmail(String email);
     List<User> getAllUsers();
     boolean deleteUser(Long id);
