@@ -23,10 +23,10 @@ public class UserDTO {
 
     private Long id;
 
-    @NotBlank(groups = {OnCreate.class, OnUpdate.class}, message = "Le nom d'utilisateur est obligatoire.")
+    @NotBlank(groups = OnCreate.class, message = "Le nom d'utilisateur est obligatoire.")
     private String username;
 
-    @NotBlank(groups = {OnCreate.class, OnUpdate.class}, message = "L'email est obligatoire.")
+    @NotBlank(groups = OnCreate.class, message = "L'email est obligatoire.")
     @Email(groups = {OnCreate.class, OnUpdate.class}, message = "Format d'email invalide.")
     private String email;
 

@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +28,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/register")
     public ResponseEntity<?> createUser(@Validated(UserDTO.OnCreate.class) @RequestBody UserDTO userDTO) {
         User createdUser = userService.createUser(
@@ -41,6 +43,7 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'CREATOR')")
     @PatchMapping("/modify/{id}")
     public ResponseEntity<UserDTO> modifyUser(
             @PathVariable("id") Long id,
@@ -49,6 +52,7 @@ public class UserController {
         return ResponseEntity.ok(UserDTO.fromEntity(updatedUser));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/{userId}")
     public ResponseEntity<UserDTO> deleteUser(@PathVariable("userId") Long id) {
         boolean deleted = userService.deleteUser(id);

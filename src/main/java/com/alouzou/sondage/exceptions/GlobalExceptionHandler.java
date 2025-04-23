@@ -23,6 +23,13 @@ public class GlobalExceptionHandler {
                 .body("Entrée invalide. Assurez-vous que les données correspondent au format attendu");
     }
 
+    @ExceptionHandler(ForbiddenActionException.class)
+    public ResponseEntity<String> handleForbiddenActionException(ForbiddenActionException ex) {
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();

@@ -4,7 +4,9 @@ import com.alouzou.sondage.dto.UserDTO;
 import com.alouzou.sondage.entities.Role;
 import com.alouzou.sondage.entities.RoleName;
 import com.alouzou.sondage.entities.User;
+import com.alouzou.sondage.entities.UserPrincipal;
 import com.alouzou.sondage.exceptions.EntityNotFoundException;
+import com.alouzou.sondage.exceptions.ForbiddenActionException;
 import com.alouzou.sondage.exceptions.ResourceAlreadyUsedException;
 import com.alouzou.sondage.repositories.RoleRepository;
 import com.alouzou.sondage.repositories.UserRepository;
@@ -26,6 +28,9 @@ import java.util.Set;
 @Service
 @Slf4j
 public class UserServiceImpl implements UserService {
+
+    @Autowired
+    AuthService authService;
 
     @Autowired
     private UserRepository userRepository;
@@ -79,6 +84,10 @@ public class UserServiceImpl implements UserService {
     public boolean deleteUser(Long id) {
         log.info("Suppression de l'utilisateur avec l'ID : {}", id);
         if (userRepository.existsById(id)) {
+            User userPrincipal = authService.getCurrentUser();
+            if(userRepository.findById(id).get().getId().compareTo(userPrincipal.getId()) == 0){
+                throw new ForbiddenActionException("Un administrateur ne peut pas se supprimer lui-même.");
+            }
             userRepository.deleteById(id);
             log.info("SUCCES - Suppression de l'utilisateur avec l'ID : {}", id);
             return true;
@@ -95,12 +104,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public User modifyUser(Long id, UserDTO userDTO) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+                .orElseThrow(() -> new EntityNotFoundException("Utilisateur non trouvé"));
         log.info("Modificatoin de l'utilisateur : {}", id);
 
+        User userPrincipal = authService.getCurrentUser();
+        //userPrincipal.getRoles();
+        //TODO
         if (userDTO.getUsername() != null) {
             if (userRepository.findByUsername(userDTO.getUsername()).isPresent()) {
                 throw new ResourceAlreadyUsedException("Le username est déjà utilisé !");
+            }
+            if(userDTO.getUsername().isEmpty()){
+                throw new IllegalArgumentException("Veuillez entrer le username");
             }
             user.setUsername(userDTO.getUsername());
         }
