@@ -1,34 +1,34 @@
 package com.alouzou.sondage.services.Impl;
 
-import com.alouzou.sondage.dto.UserChoiceDTO;
+import com.alouzou.sondage.dto.VoteDTO;
 import com.alouzou.sondage.entities.Choice;
 import com.alouzou.sondage.entities.User;
-import com.alouzou.sondage.entities.UserChoice;
+import com.alouzou.sondage.entities.Vote;
 import com.alouzou.sondage.exceptions.EntityNotFoundException;
 import com.alouzou.sondage.repositories.ChoiceRepository;
-import com.alouzou.sondage.repositories.UserChoiceRepository;
+import com.alouzou.sondage.repositories.VoteRepository;
 import com.alouzou.sondage.repositories.UserRepository;
-import com.alouzou.sondage.services.UserChoiceService;
+import com.alouzou.sondage.services.VoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserChoiceServiceImpl implements UserChoiceService {
+public class VoteServiceImpl implements VoteService {
 
     private UserRepository userRepository;
     private ChoiceRepository choiceRepository;
-    private UserChoiceRepository userChoiceRepository;
+    private VoteRepository voteRepository;
 
     @Autowired
-    public UserChoiceServiceImpl(UserRepository userRepository, ChoiceRepository choiceRepository, UserChoiceRepository userChoiceRepository) {
+    public VoteServiceImpl(UserRepository userRepository, ChoiceRepository choiceRepository, VoteRepository voteRepository) {
         this.userRepository = userRepository;
         this.choiceRepository = choiceRepository;
-        this.userChoiceRepository = userChoiceRepository;
+        this.voteRepository = voteRepository;
     }
 
     @Override
-    public UserChoice vote(UserChoiceDTO dto) {
-        if (userChoiceRepository.existsByUserIdAndChoiceId(dto.getUserId(), dto.getChoiceId())) {
+    public Vote vote(VoteDTO dto) {
+        if (voteRepository.existsByUserIdAndChoiceId(dto.getUserId(), dto.getChoiceId())) {
             throw new IllegalArgumentException("L'utilisateur a déjà voté pour ce choix.");
         }
         User user = userRepository.findById(dto.getUserId())
@@ -36,11 +36,11 @@ public class UserChoiceServiceImpl implements UserChoiceService {
         Choice choice = choiceRepository.findById(dto.getChoiceId())
                 .orElseThrow(() -> new EntityNotFoundException("Choix introuvable"));
 
-        UserChoice userChoice = UserChoice.builder()
+        Vote vote = Vote.builder()
                 .user(user)
                 .choice(choice)
                 .build();
 
-        return userChoiceRepository.save(userChoice);
+        return voteRepository.save(vote);
     }
 }

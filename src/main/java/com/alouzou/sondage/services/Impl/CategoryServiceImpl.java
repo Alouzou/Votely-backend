@@ -97,4 +97,10 @@ public class CategoryServiceImpl implements CategoryService {
                 .orElseThrow(() -> new EntityNotFoundException("Aucune catégorie n'a été trouvée"));
     }
 
+    @Override
+    public Category findByIdAndIsActiveTrue(Long id) {
+        return categoryRepository.findByIdAndIsActiveTrue(id)
+                .orElseThrow(() -> new EntityNotFoundException("Catégorie active avec l'ID : " + id + " non trouvée"));
+    }
+
 }

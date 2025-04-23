@@ -1,8 +1,8 @@
 package com.alouzou.sondage.controllers;
 
-import com.alouzou.sondage.dto.UserChoiceDTO;
-import com.alouzou.sondage.entities.UserChoice;
-import com.alouzou.sondage.services.UserChoiceService;
+import com.alouzou.sondage.dto.VoteDTO;
+import com.alouzou.sondage.entities.Vote;
+import com.alouzou.sondage.services.VoteService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,16 +15,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/votes")
 @Slf4j
-public class UserChoiceController {
+public class VoteController {
 
     @Autowired
-    private UserChoiceService userChoiceService;
+    private VoteService voteService;
 
     @PreAuthorize("hasAnyRole('USER', 'CREATOR')")
     @PostMapping
-    public ResponseEntity<UserChoiceDTO> vote(@RequestBody UserChoiceDTO dto) {
-        UserChoice savedVote = userChoiceService.vote(dto);
-        return ResponseEntity.ok(UserChoiceDTO.fromEntity(savedVote));
+    public ResponseEntity<VoteDTO> vote(@RequestBody VoteDTO dto) {
+        Vote savedVote = voteService.vote(dto);
+        return ResponseEntity.ok(VoteDTO.fromEntity(savedVote));
     }
 
 }

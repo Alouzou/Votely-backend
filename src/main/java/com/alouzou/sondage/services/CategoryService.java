@@ -10,11 +10,12 @@ public interface CategoryService {
 
 
     List<Category> findAll();
-
     Category findById(Long id);
     Category createCategory(String name, Boolean isActive);
 
     Category modifyCategory(Long id, Category category);
     void deleteById(Long id);
     List<Category> findAllByIsActive();
+
+    Category findByIdAndIsActiveTrue(Long id);
 }

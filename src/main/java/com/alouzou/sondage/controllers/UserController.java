@@ -63,7 +63,7 @@ public class UserController {
         }
     }
 
-
+    @PreAuthorize("hasAnyRole('ADMIN', 'CREATOR')")
     @GetMapping("/{userId}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable("userId") Long id) {
         return userService.getUserById(id)
@@ -72,6 +72,7 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'CREATOR')")
     @GetMapping("/getByEmail")
     public ResponseEntity<UserDTO> getUserByEmail(@RequestParam String email) {
         return userService.getUserByEmail(email)
@@ -80,6 +81,7 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'CREATOR')")
     @GetMapping
     public ResponseEntity<Page<UserDTO>> getAllUsers(
             @RequestParam(defaultValue = "0") int page,

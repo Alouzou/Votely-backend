@@ -1,8 +1,8 @@
 package com.alouzou.sondage.services;
 
-import com.alouzou.sondage.dto.UserChoiceDTO;
-import com.alouzou.sondage.entities.UserChoice;
+import com.alouzou.sondage.dto.VoteDTO;
+import com.alouzou.sondage.entities.Vote;
 
-public interface UserChoiceService {
-    UserChoice vote(UserChoiceDTO dto);
+public interface VoteService {
+    Vote vote(VoteDTO dto);
 }

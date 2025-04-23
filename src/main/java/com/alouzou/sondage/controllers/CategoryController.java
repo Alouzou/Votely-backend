@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,12 +22,14 @@ public class CategoryController {
     private CategoryService categoryService;
 
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/create")
     public ResponseEntity<Category> createCategory(@RequestBody Category category){
         Category cat = categoryService.createCategory(category.getName(), category.isActive());
         return ResponseEntity.ok(cat);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/modify/{CategoryId}")
     public ResponseEntity<Category> modifyCategory(
             @PathVariable("CategoryId") Long id,
@@ -35,6 +38,7 @@ public class CategoryController {
         return ResponseEntity.ok(cat);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/{idCategory}")
     public ResponseEntity<Void> deleteCategory(
             @PathVariable("idCategory") Long id
@@ -46,6 +50,7 @@ public class CategoryController {
     }
 
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/all")
     public ResponseEntity<List<Category>> findAll(){
         return ResponseEntity.ok(categoryService.findAll());
@@ -56,6 +61,14 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.findAllByIsActive());
     }
 
+    @GetMapping("/active/{id}")
+    public ResponseEntity<Category> findByIdActive(@PathVariable Long id){
+        return ResponseEntity
+                .ok(categoryService.findByIdAndIsActiveTrue(id));
+
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<Category> findById(@PathVariable Long id){
         return ResponseEntity

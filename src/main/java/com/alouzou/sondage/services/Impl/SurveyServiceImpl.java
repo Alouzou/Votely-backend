@@ -90,4 +90,10 @@ public class SurveyServiceImpl implements SurveyService {
     public List<Survey> findAll() {
         return surveyRepository.findAll();
     }
+
+    @Override
+    public boolean deleteUser(Long idSurvey) {
+        //TODO 
+        return false;
+    }
 }

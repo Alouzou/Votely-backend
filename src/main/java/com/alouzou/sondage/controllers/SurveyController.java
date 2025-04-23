@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,11 +22,13 @@ public class SurveyController {
     @Autowired
     private SurveyService surveyService;
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'CREATOR')")
     @PostMapping("/create")
     public ResponseEntity<SurveyDTO> createSurvey(@Valid @RequestBody SurveyDTO surveyDTO) {
         Survey createdSurvey = surveyService.createSurvey(surveyDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(SurveyDTO.fromEntity(createdSurvey));
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<SurveyDTO> getSurveyById(@PathVariable Long id) {
@@ -46,6 +49,7 @@ public class SurveyController {
 
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'CREATOR')")
     @GetMapping("/creator/{creatorId}")
     public ResponseEntity<List<SurveyDTO>> getSurveysByCreator(@PathVariable Long creatorId) {
         List<SurveyDTO> surveys = surveyService.getSurveysByCreator(creatorId)
@@ -64,5 +68,16 @@ public class SurveyController {
 
         return ResponseEntity
                 .ok(surveys);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/delete/{idSurvey}")
+    public ResponseEntity<Void> deleteSurvey(@PathVariable("idSurvey") Long idSurvey){
+        boolean deleted = surveyService.deleteUser(idSurvey);
+        if (deleted) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
