@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService {
             throw new ResourceAlreadyUsedException("L'email est déjà utilisé !");
         }
 
-        if(userRepository.findByUsername(username).isPresent()){
+        if (userRepository.findByUsername(username).isPresent()) {
             throw new ResourceAlreadyUsedException("Le username est dèja utilisé !");
         }
         User user = new User();
@@ -57,12 +57,12 @@ public class UserServiceImpl implements UserService {
 
         Set<Role> roles = new HashSet<>();
         rolesNames.forEach(roleName -> {
-            try{
+            try {
                 RoleName enumRoleName = RoleName.valueOf(roleName.toUpperCase());
                 Role role = roleRepository.findByName(enumRoleName)
                         .orElseThrow(() -> new EntityNotFoundException("Rôle non trouvé : " + roleName));
                 roles.add(role);
-            }catch(IllegalArgumentException e){
+            } catch (IllegalArgumentException e) {
                 throw new EntityNotFoundException("Rôle invalide : " + roleName);
             }
         });
@@ -85,7 +85,7 @@ public class UserServiceImpl implements UserService {
         log.info("Suppression de l'utilisateur avec l'ID : {}", id);
         if (userRepository.existsById(id)) {
             User userPrincipal = authService.getCurrentUser();
-            if(userRepository.findById(id).get().getId().compareTo(userPrincipal.getId()) == 0){
+            if (userRepository.findById(id).get().getId().compareTo(userPrincipal.getId()) == 0) {
                 throw new ForbiddenActionException("Un administrateur ne peut pas se supprimer lui-même.");
             }
             userRepository.deleteById(id);
@@ -100,6 +100,11 @@ public class UserServiceImpl implements UserService {
     public Optional<User> getUserById(Long id) {
         return userRepository.findById(id);
     }
+    public boolean hasRole(User user, RoleName roleName){
+        return user.getRoles().stream()
+                .anyMatch(role -> role.getName().equals(roleName));
+    }
+
 
     @Override
     public User modifyUser(Long id, UserDTO userDTO) {
@@ -108,27 +113,28 @@ public class UserServiceImpl implements UserService {
         log.info("Modificatoin de l'utilisateur : {}", id);
 
         User userPrincipal = authService.getCurrentUser();
-        //userPrincipal.getRoles();
-        //TODO
-        if (userDTO.getUsername() != null) {
-            if (userRepository.findByUsername(userDTO.getUsername()).isPresent()) {
-                throw new ResourceAlreadyUsedException("Le username est déjà utilisé !");
+        if (user.getId().compareTo(userPrincipal.getId()) == 0 || hasRole(userPrincipal, RoleName.ROLE_ADMIN)) {
+            if (userDTO.getUsername() != null) {
+                if (userRepository.findByUsername(userDTO.getUsername()).isPresent()) {
+                    throw new ResourceAlreadyUsedException("Le username est déjà utilisé !");
+                }
+                if (userDTO.getUsername().isEmpty()) {
+                    throw new IllegalArgumentException("Veuillez entrer le username");
+                }
+                user.setUsername(userDTO.getUsername());
             }
-            if(userDTO.getUsername().isEmpty()){
-                throw new IllegalArgumentException("Veuillez entrer le username");
+            if (userDTO.getEmail() != null) {
+                if (userRepository.findByEmail(userDTO.getEmail()).isPresent()) {
+                    throw new ResourceAlreadyUsedException("L'email est déjà utilisé !");
+                }
+                user.setEmail(userDTO.getEmail());
             }
-            user.setUsername(userDTO.getUsername());
-        }
-        if (userDTO.getEmail() != null) {
-            if(userRepository.findByEmail(userDTO.getEmail()).isPresent()){
-                throw new ResourceAlreadyUsedException("L'email est déjà utilisé !");
+            if (userDTO.getPassword() != null && !userDTO.getPassword().trim().isEmpty()) {
+                user.setPassword(userDTO.getPassword());
             }
-            user.setEmail(userDTO.getEmail());
+            return userRepository.save(user);
         }
-        if (userDTO.getPassword() != null && !userDTO.getPassword().trim().isEmpty()) {
-            user.setPassword(userDTO.getPassword());
-        }
-        return userRepository.save(user);
+        throw new ForbiddenActionException("Seuls un administrateur ou l'utilisateur lui-même peuvent effectuer cette modification.");
     }
 
     @Override
