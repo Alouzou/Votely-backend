@@ -38,6 +38,7 @@ public class UserDTO {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
+    @Null(groups = UserDTO.OnUpdate.class, message = "Les rôles ne peuvent pas être modifiés.")
     private Set<String> roles;
 
     public static UserDTO fromEntity(User user) {
