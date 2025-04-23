@@ -1,5 +1,6 @@
 package com.alouzou.sondage.config;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,6 +25,14 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .exceptionHandling(exception -> exception
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                            response.setContentType("application/json");
+                            response.getWriter().write("Vous n'avez pas les permissions nécessaires pour accéder à cette ressource.");
+                        })
+                );
         http
                 .authorizeHttpRequests(auth -> auth
                                 //.requestMatchers("/api/users/register", "/api/delete/*").hasRole("ADMIN")

@@ -6,6 +6,7 @@ import com.alouzou.sondage.services.UserChoiceService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +20,7 @@ public class UserChoiceController {
     @Autowired
     private UserChoiceService userChoiceService;
 
+    @PreAuthorize("hasAnyRole('USER', 'CREATOR')")
     @PostMapping
     public ResponseEntity<UserChoiceDTO> vote(@RequestBody UserChoiceDTO dto) {
         UserChoice savedVote = userChoiceService.vote(dto);
