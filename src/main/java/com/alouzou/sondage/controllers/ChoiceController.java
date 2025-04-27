@@ -13,15 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping()
 public class ChoiceController {
 
-    @Autowired
-    private ChoiceService choiceService;
-
-//    @PostMapping
-//    public ResponseEntity<Choice> createChoice(@RequestBody @Valid ChoiceDTO choiceDTO) {
-//        Choice createdChoice = choiceService.createChoice(choiceDTO);
-//        return ResponseEntity.status(HttpStatus.CREATED).body(createdChoice);
-//    }
 }

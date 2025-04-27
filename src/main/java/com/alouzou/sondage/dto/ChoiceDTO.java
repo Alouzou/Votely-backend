@@ -6,8 +6,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class ChoiceDTO {
 
     @NotBlank(message = "Veuillez entre le choix")
@@ -17,7 +19,7 @@ public class ChoiceDTO {
     @JsonIgnore
     private Long questionId;
 
-    public ChoiceDTO(String choiceText){
+    public ChoiceDTO(String choiceText) {
         this.choiceText = choiceText;
     }
 
@@ -26,7 +28,7 @@ public class ChoiceDTO {
         this.questionId = questionId;
     }
 
-        public static ChoiceDTO fromEntity(Choice choice){
+    public static ChoiceDTO fromEntity(Choice choice) {
         return new ChoiceDTO(choice.getChoiceText(), choice.getQuestion().getId());
     }
 
