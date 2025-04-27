@@ -4,7 +4,6 @@ import com.alouzou.sondage.dto.UserDTO;
 import com.alouzou.sondage.entities.Role;
 import com.alouzou.sondage.entities.RoleName;
 import com.alouzou.sondage.entities.User;
-import com.alouzou.sondage.entities.UserPrincipal;
 import com.alouzou.sondage.exceptions.EntityNotFoundException;
 import com.alouzou.sondage.exceptions.ForbiddenActionException;
 import com.alouzou.sondage.exceptions.ResourceAlreadyUsedException;
@@ -17,7 +16,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.HashSet;
 import java.util.List;
