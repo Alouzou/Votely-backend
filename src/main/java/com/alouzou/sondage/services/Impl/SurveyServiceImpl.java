@@ -81,8 +81,8 @@ public class SurveyServiceImpl implements SurveyService {
 
     @Override
     public Optional<Survey> getSurveyById(Long id) {
-        Survey survey = surveyRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Sondage non trouvé avec l'ID : " + id ));
+        surveyRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Sondage non trouvé avec l'ID : " + id));
         return surveyRepository.findById(id);
     }
 
@@ -92,8 +92,10 @@ public class SurveyServiceImpl implements SurveyService {
     }
 
     @Override
-    public boolean deleteUser(Long idSurvey) {
-        //TODO 
-        return false;
+    public void deleteSurvey(Long idSurvey) {
+        surveyRepository.findById(idSurvey)
+                .orElseThrow(() -> new EntityNotFoundException("Sondage non trouvé avec id : " + idSurvey));
+        surveyRepository.deleteById(idSurvey);
+
     }
 }

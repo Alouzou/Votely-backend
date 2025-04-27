@@ -72,12 +72,9 @@ public class SurveyController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/{idSurvey}")
-    public ResponseEntity<Void> deleteSurvey(@PathVariable("idSurvey") Long idSurvey){
-        boolean deleted = surveyService.deleteUser(idSurvey);
-        if (deleted) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<Void> deleteSurvey(@PathVariable("idSurvey") Long idSurvey) {
+        surveyService.deleteSurvey(idSurvey);
+        return ResponseEntity.noContent().build();
+
     }
 }

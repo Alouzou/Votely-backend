@@ -15,5 +15,5 @@ public interface SurveyService {
     Optional<Survey> getSurveyById(Long id);
     List<Survey> findAll();
 
-    boolean deleteUser(Long idSurvey);
+    void deleteSurvey(Long idSurvey);
 }
