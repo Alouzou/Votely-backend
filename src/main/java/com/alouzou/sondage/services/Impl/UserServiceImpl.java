@@ -100,10 +100,9 @@ public class UserServiceImpl implements UserService {
     public Optional<User> getUserById(Long id) {
         return userRepository.findById(id);
     }
-    public boolean hasRole(User user, RoleName roleName){
-        return user.getRoles().stream()
-                .anyMatch(role -> role.getName().equals(roleName));
-    }
+
+
+
 
 
     @Override
@@ -113,7 +112,7 @@ public class UserServiceImpl implements UserService {
         log.info("Modificatoin de l'utilisateur : {}", id);
 
         User userPrincipal = authService.getCurrentUser();
-        if (user.getId().compareTo(userPrincipal.getId()) == 0 || hasRole(userPrincipal, RoleName.ROLE_ADMIN)) {
+        if (user.getId().compareTo(userPrincipal.getId()) == 0 || authService.hasRole(userPrincipal, RoleName.ROLE_ADMIN)) {
             if (userDTO.getUsername() != null) {
                 if (userRepository.findByUsername(userDTO.getUsername()).isPresent()) {
                     throw new ResourceAlreadyUsedException("Le username est déjà utilisé !");

@@ -1,6 +1,8 @@
 package com.alouzou.sondage.entities;
 
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "choices")
@@ -15,6 +17,8 @@ public class Choice {
     @JoinColumn(name = "question_id", nullable = false)
     private Question question;
 
+    @OneToMany(mappedBy = "choice", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Vote> votes = new ArrayList<>();
 
     public Choice() {
     }

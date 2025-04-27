@@ -49,7 +49,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body("Format invalide pour un champ booléen. Utilisez true ou false.");
+                .body("Format invalide pour un champ." + ex.getCause());
     }
 
     @ExceptionHandler(ResourceAlreadyUsedException.class)

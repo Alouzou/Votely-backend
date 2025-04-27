@@ -15,12 +15,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class VoteServiceImpl implements VoteService {
 
+    private AuthService authService;
     private UserRepository userRepository;
     private ChoiceRepository choiceRepository;
     private VoteRepository voteRepository;
 
     @Autowired
-    public VoteServiceImpl(UserRepository userRepository, ChoiceRepository choiceRepository, VoteRepository voteRepository) {
+    public VoteServiceImpl(AuthService authService, UserRepository userRepository, ChoiceRepository choiceRepository, VoteRepository voteRepository) {
+        this.authService = authService;
         this.userRepository = userRepository;
         this.choiceRepository = choiceRepository;
         this.voteRepository = voteRepository;
@@ -28,10 +30,11 @@ public class VoteServiceImpl implements VoteService {
 
     @Override
     public Vote vote(VoteDTO dto) {
-        if (voteRepository.existsByUserIdAndChoiceId(dto.getUserId(), dto.getChoiceId())) {
+        User userPrincipal = authService.getCurrentUser();
+        if (voteRepository.existsByUserIdAndChoiceId(userPrincipal.getId(), dto.getChoiceId())) {
             throw new IllegalArgumentException("L'utilisateur a déjà voté pour ce choix.");
         }
-        User user = userRepository.findById(dto.getUserId())
+        User user = userRepository.findById(userPrincipal.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Utilisateur introuvable"));
         Choice choice = choiceRepository.findById(dto.getChoiceId())
                 .orElseThrow(() -> new EntityNotFoundException("Choix introuvable"));

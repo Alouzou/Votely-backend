@@ -1,5 +1,6 @@
 package com.alouzou.sondage.services.Impl;
 
+import com.alouzou.sondage.entities.RoleName;
 import com.alouzou.sondage.entities.User;
 import com.alouzou.sondage.entities.UserPrincipal;
 import org.springframework.security.core.Authentication;
@@ -20,5 +21,10 @@ public class AuthService {
 
         throw new RuntimeException("Utilisateur non authentifié");
 
+    }
+
+    public boolean hasRole(User user, RoleName roleName){
+        return user.getRoles().stream()
+                .anyMatch(role -> role.getName().equals(roleName));
     }
 }
