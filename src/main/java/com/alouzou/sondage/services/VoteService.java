@@ -4,5 +4,5 @@ import com.alouzou.sondage.dto.VoteDTO;
 import com.alouzou.sondage.entities.Vote;
 
 public interface VoteService {
-    Vote vote(VoteDTO dto);
+    Vote submitVote(VoteDTO dto);
 }

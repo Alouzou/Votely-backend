@@ -2,7 +2,6 @@ package com.alouzou.sondage.services.Impl;
 
 import com.alouzou.sondage.dto.VoteDTO;
 import com.alouzou.sondage.entities.Choice;
-import com.alouzou.sondage.entities.Survey;
 import com.alouzou.sondage.entities.User;
 import com.alouzou.sondage.entities.Vote;
 import com.alouzou.sondage.exceptions.EntityNotFoundException;
@@ -41,7 +40,7 @@ public class VoteServiceImpl implements VoteService {
     }
 
     @Override
-    public Vote vote(VoteDTO dto) {
+    public Vote submitVote(VoteDTO dto) {
         User userPrincipal = authService.getCurrentUser();
         User user = userRepository.findById(userPrincipal.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Utilisateur introuvable"));
