@@ -5,15 +5,15 @@ import com.alouzou.sondage.entities.Question;
 import com.alouzou.sondage.entities.Survey;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
+import lombok.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class QuestionDTO {
 
     private Long id;
