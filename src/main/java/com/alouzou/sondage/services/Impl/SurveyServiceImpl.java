@@ -1,11 +1,9 @@
 package com.alouzou.sondage.services.Impl;
 
+import com.alouzou.sondage.dto.ChoiceDTO;
 import com.alouzou.sondage.dto.QuestionDTO;
 import com.alouzou.sondage.dto.SurveyDTO;
-import com.alouzou.sondage.entities.Category;
-import com.alouzou.sondage.entities.Question;
-import com.alouzou.sondage.entities.Survey;
-import com.alouzou.sondage.entities.User;
+import com.alouzou.sondage.entities.*;
 import com.alouzou.sondage.exceptions.EntityNotFoundException;
 import com.alouzou.sondage.exceptions.ResourceAlreadyUsedException;
 import com.alouzou.sondage.repositories.CategoryRepository;
@@ -13,6 +11,7 @@ import com.alouzou.sondage.repositories.SurveyRepository;
 import com.alouzou.sondage.repositories.UserRepository;
 import com.alouzou.sondage.services.SurveyService;
 import jakarta.persistence.EntityExistsException;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +36,7 @@ public class SurveyServiceImpl implements SurveyService {
     private UserRepository userRepository;
 
     @Override
+    @Transactional
     public Survey createSurvey(SurveyDTO surveyDTO) {
 
         surveyRepository.findByTitle(surveyDTO.getTitle()).ifPresent(s -> {
@@ -54,7 +54,39 @@ public class SurveyServiceImpl implements SurveyService {
         survey.setTitle(surveyDTO.getTitle());
         survey.setCreator(creator);
         survey.setCategory(category);
-        return surveyRepository.save(survey);
+
+        List<Question> questions = new ArrayList<>();
+        if(surveyDTO.getQuestions() != null && !surveyDTO.getQuestions().isEmpty()){
+            for (QuestionDTO questionDTO : surveyDTO.getQuestions()){
+                Question question = new Question();
+                question.setQuestionText(questionDTO.getQuestionText());
+                question.setSurvey(survey);
+
+                List<Choice> choices = new ArrayList<>();
+                if (questionDTO.getChoices() != null && !questionDTO.getChoices().isEmpty()) {
+                    for(ChoiceDTO choiceDTO: questionDTO.getChoices()){
+                        Choice choice = new Choice();
+                        choice.setQuestion(question);
+                        choice.setChoiceText(choiceDTO.getChoiceText());
+                        choices.add(choice);
+                    }
+                }
+                question.setChoices(choices);
+                questions.add(question);
+            }
+
+        }
+
+        survey.setQuestions(questions);
+
+        Survey savedSurvey = surveyRepository.save(survey);
+
+        log.info("Sondage créé avec succès : ID={}, Titre={}, Questions={}",
+                savedSurvey.getId(),
+                savedSurvey.getTitle(),
+                savedSurvey.getQuestions().size());
+
+        return savedSurvey;
     }
 
     @Override
