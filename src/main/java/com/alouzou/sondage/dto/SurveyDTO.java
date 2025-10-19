@@ -27,10 +27,25 @@ public class SurveyDTO {
     private Long creatorId;
 
     @Getter
+    private String creatorName;
+
+    @Getter
+    private String categoryName;
+
+    @Getter
     @NotNull(message = "Veuillez entrer la catégorie du sondage")
     private Long categoryId;
     private List<QuestionDTO> questions;
 
+    public SurveyDTO(Long id, String title, Long creatorId, String creatorName, String categoryName, Long categoryId, List<QuestionDTO> questions) {
+        this.id = id;
+        this.title = title;
+        this.creatorId = creatorId;
+        this.creatorName = creatorName;
+        this.categoryName = categoryName;
+        this.categoryId = categoryId;
+        this.questions = questions;
+    }
 
     public SurveyDTO() {
     }
@@ -64,7 +79,9 @@ public class SurveyDTO {
                 .id(survey.getId())
                 .title(survey.getTitle())
                 .creatorId(survey.getCreator().getId())
+                .creatorName(survey.getCreator().getUsername())
                 .categoryId(survey.getCategory().getId())
+                .categoryName(survey.getCategory().getName())
                 .questions(
                         survey.getQuestions()
                                 .stream()
