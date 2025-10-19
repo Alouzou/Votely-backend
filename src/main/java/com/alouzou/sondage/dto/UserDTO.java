@@ -3,7 +3,6 @@ package com.alouzou.sondage.dto;
 import com.alouzou.sondage.entities.Role;
 import com.alouzou.sondage.entities.RoleName;
 import com.alouzou.sondage.entities.User;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

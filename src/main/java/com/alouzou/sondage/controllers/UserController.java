@@ -1,11 +1,7 @@
 package com.alouzou.sondage.controllers;
 
 import com.alouzou.sondage.dto.UserDTO;
-import com.alouzou.sondage.entities.Role;
-import com.alouzou.sondage.entities.RoleName;
 import com.alouzou.sondage.entities.User;
-import com.alouzou.sondage.exceptions.EntityNotFoundException;
-import com.alouzou.sondage.repositories.RoleRepository;
 import com.alouzou.sondage.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,31 +13,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 @RestController
 @RequestMapping("api/users")
 public class UserController {
     @Autowired
     private UserService userService;
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/register")
-    public ResponseEntity<?> createUser(@Validated(UserDTO.OnCreate.class) @RequestBody UserDTO userDTO) {
-        User createdUser = userService.createUser(
-                userDTO.getUsername(),
-                userDTO.getEmail(),
-                userDTO.getPassword(),
-                userDTO.getRoles()
-        );
-        Map<String, Object> response = new HashMap<>();
-        response.put("message", "Utilisateur enregistré avec succès !");
-        response.put("user", UserDTO.fromEntity(createdUser));
-        return ResponseEntity.ok(response);
-    }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'CREATOR')")
     @PatchMapping("/modify/{id}")
