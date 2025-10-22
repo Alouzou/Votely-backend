@@ -24,4 +24,11 @@ public class VoteController {
         return ResponseEntity.ok(dto);
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'CREATOR')")
+    @GetMapping("/check/{questionId}")
+    public ResponseEntity<Boolean> hasVoted(@PathVariable Long questionId) {
+        boolean hasVoted = voteService.hasUserVotedForQuestion(questionId);
+        return ResponseEntity.ok(hasVoted);
+    }
+
 }
