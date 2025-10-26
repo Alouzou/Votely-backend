@@ -1,8 +1,4 @@
 spring:
-  security:
-    user:
-      name: ${SPRING_SECURITY_USERNAME}
-      password: ${SPRING_SECURITY_PASSWORD}
   datasource:
     url: jdbc:mysql://${PROD_DB_HOST}:${PROD_DB_PORT}/${PROD_DB_NAME}?createDatabaseIfNotExist=true&useUnicode=true;
     username: ${DB_USERNAME}
