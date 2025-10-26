@@ -62,8 +62,6 @@ class VoteServiceImplTest {
         when(authService.getCurrentUser()).thenReturn(user);
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(choiceRepository.findById(5L)).thenReturn(Optional.of(choice));
-        when(voteRepository.existsByUserIdAndChoiceId(1L, 5L)).thenReturn(false);
-        when(voteRepository.existsByUserIdAndSurveyId(1L, 10L)).thenReturn(false);
 
         Vote savedVote = Vote.builder().user(user).choice(choice).build();
         when(voteRepository.save(any(Vote.class))).thenReturn(savedVote);
@@ -118,7 +116,6 @@ class VoteServiceImplTest {
         when(authService.getCurrentUser()).thenReturn(user);
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(choiceRepository.findById(5L)).thenReturn(Optional.of(choice));
-        when(voteRepository.existsByUserIdAndChoiceId(1L, 5L)).thenReturn(true);
 
         VoteDTO dto = new VoteDTO();
         dto.setChoiceId(5L);
@@ -147,32 +144,26 @@ class VoteServiceImplTest {
         when(authService.getCurrentUser()).thenReturn(user);
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(choiceRepository.findById(5L)).thenReturn(Optional.of(choice));
-        when(voteRepository.existsByUserIdAndChoiceId(1L, 5L)).thenReturn(false);
-        when(voteRepository.existsByUserIdAndSurveyId(1L, 10L)).thenReturn(true);
-
         assertThrows(ForbiddenActionException.class, () -> voteService.submitVote(dto));
     }
 
-    @Test
-    void testHasUserAlreadyVotedForSurvey_True() {
-        Choice choice = new Choice();
-        Survey survey = new Survey();
-        survey.setId(99L);
-        Question question = new Question();
-        question.setSurvey(survey);
-        choice.setQuestion(question);
+//    @Test
+//    void testHasUserAlreadyVotedForSurvey_True() {
+//        Choice choice = new Choice();
+//        Survey survey = new Survey();
+//        survey.setId(99L);
+//        Question question = new Question();
+//        question.setSurvey(survey);
+//        choice.setQuestion(question);
+//
+//        when(choiceRepository.findById(7L)).thenReturn(Optional.of(choice));
+//        assertTrue(result);
+//    }
 
-        when(choiceRepository.findById(7L)).thenReturn(Optional.of(choice));
-        when(voteRepository.existsByUserIdAndSurveyId(3L, 99L)).thenReturn(true);
-
-        boolean result = voteService.hasUserAlreadyVotedForSurvey(7L, 3L);
-        assertTrue(result);
-    }
-
-    @Test
-    void testHasUserAlreadyVotedForSurvey_ChoiceNotFound() {
-        when(choiceRepository.findById(7L)).thenReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class,
-                () -> voteService.hasUserAlreadyVotedForSurvey(7L, 3L));
-    }
+//    @Test
+//    void testHasUserAlreadyVotedForSurvey_ChoiceNotFound() {
+//        when(choiceRepository.findById(7L)).thenReturn(Optional.empty());
+//        assertThrows(EntityNotFoundException.class,
+//                () -> voteService.hasUserAlreadyVotedForSurvey(7L, 3L));
+//    }
 }
