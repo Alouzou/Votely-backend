@@ -4,7 +4,7 @@ spring:
       name: ${SPRING_SECURITY_USERNAME}
       password: ${SPRING_SECURITY_PASSWORD}
   datasource:
-    url: ${DB_URL}
+    url: jdbc:mysql://${PROD_DB_HOST}:${PROD_DB_PORT}/${PROD_DB_NAME}?createDatabaseIfNotExist=true&useUnicode=true;
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
