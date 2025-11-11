@@ -1,6 +1,7 @@
 package com.alouzou.sondage.controllers;
 
 import com.alouzou.sondage.dto.UserDTO;
+import com.alouzou.sondage.dto.VoteDTO;
 import com.alouzou.sondage.entities.User;
 import com.alouzou.sondage.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api/users")
@@ -68,5 +71,11 @@ public class UserController {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).ascending());
         Page<UserDTO> users = userService.listerUsers(pageable);
         return ResponseEntity.ok(users);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("{userId}/votes")
+    public ResponseEntity<String> getVotesByUser(@PathVariable("userId") Long id){
+        return ResponseEntity.ok("ca marche");
     }
 }

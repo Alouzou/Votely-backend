@@ -10,6 +10,7 @@ import lombok.Data;
 import jakarta.validation.constraints.*;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -41,6 +42,9 @@ public class UserDTO {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
+
+    private Date createdAt;
+
     @Null(groups = UserDTO.OnUpdate.class, message = "Les rôles ne peuvent pas être modifiés.")
     private Set<String> roles;
 
@@ -54,6 +58,7 @@ public class UserDTO {
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .password(user.getPassword())
+                .createdAt(user.getCreatedAt())
                 .roles(user.getRoles()
                         .stream()
                         .map(role -> role.getName().name())

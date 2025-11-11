@@ -136,6 +136,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Page<UserDTO> listerUsers(Pageable pageable) {
-        return userRepository.findAll(pageable).map(UserDTO::fromEntity);
+        Page<User> users = userRepository.findAll(pageable);
+
+//        users.forEach(user -> {
+//            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+//            System.out.println("User: " + user.getUsername());
+//            System.out.println("Roles size: " + user.getRoles().size());
+//            user.getRoles().forEach(role ->
+//                    System.out.println("Role: " + role.getName())
+//            );
+//        });
+
+        return users.map(UserDTO::fromEntity);
+
+//        return userRepository.findAll(pageable).map(UserDTO::fromEntity);
     }
 }

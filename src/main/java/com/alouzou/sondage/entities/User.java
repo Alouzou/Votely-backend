@@ -1,11 +1,16 @@
 package com.alouzou.sondage.entities;
 import jakarta.persistence.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "users")
 public class User {
     @Id
@@ -15,6 +20,10 @@ public class User {
     private String username;
     private String email;
     private String password;
+
+    @CreatedDate
+    @Column
+    private Date createdAt;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
@@ -47,6 +56,22 @@ public class User {
         this.email = email;
     }
 
+    public User(Long id, String username, String email, String password, Date createdAt, Set<Role> roles) {
+        this.id = id;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.createdAt = createdAt;
+        this.roles = roles;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
 
     public Long getId() {
         return id;
