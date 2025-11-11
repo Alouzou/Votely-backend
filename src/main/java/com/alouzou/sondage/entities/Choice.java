@@ -37,6 +37,14 @@ public class Choice {
         this.question = question;
     }
 
+    public List<Vote> getVotes() {
+        return votes;
+    }
+
+    public void setVotes(List<Vote> votes) {
+        this.votes = votes;
+    }
+
     public Long getId() {
         return id;
     }

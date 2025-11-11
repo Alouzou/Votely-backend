@@ -28,6 +28,7 @@ public class QuestionDTO {
         return question;
     }
 
+
     public static QuestionDTO fromEntity(Question question) {
         return QuestionDTO.builder()
                 .id(question.getId())
@@ -37,6 +38,20 @@ public class QuestionDTO {
                         question.getChoices()
                                 .stream()
                                 .map(ChoiceDTO::fromEntity)
+                                .collect(Collectors.toList())
+                )
+                .build();
+    }
+
+    public static QuestionDTO fromEntityWithVotes(Question question) {
+        return QuestionDTO.builder()
+                .id(question.getId())
+                .questionText(question.getQuestionText())
+                .surveyId(question.getSurvey().getId())
+                .choices(
+                        question.getChoices()
+                                .stream()
+                                .map(ChoiceDTO::fromEntityWithVotes)
                                 .collect(Collectors.toList())
                 )
                 .build();
