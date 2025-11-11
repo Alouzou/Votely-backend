@@ -18,7 +18,7 @@ public class VoteController {
     private VoteService voteService;
 
     @PreAuthorize("hasAnyRole('USER', 'CREATOR')")
-    @PostMapping("/submit")
+    @PostMapping
     public ResponseEntity<VoteDTO> vote(@RequestBody VoteDTO dto) {
         voteService.submitVote(dto);
         return ResponseEntity.ok(dto);
@@ -30,5 +30,9 @@ public class VoteController {
         boolean hasVoted = voteService.hasUserVotedForQuestion(questionId);
         return ResponseEntity.ok(hasVoted);
     }
+
+
+
+
 
 }

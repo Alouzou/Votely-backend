@@ -39,7 +39,7 @@ public class VoteServiceImpl implements VoteService {
                 .orElseThrow(() -> new EntityNotFoundException("Utilisateur introuvable"));
         Choice choice = choiceRepository.findById(dto.getChoiceId())
                 .orElseThrow(() -> new EntityNotFoundException("Choix introuvable"));
-
+        
         if (hasUserAlreadyVotedForQuestion(dto.getChoiceId(), user.getId())) {
             throw new ForbiddenActionException("Vous avez déjà voté pour cette question.");
         }
