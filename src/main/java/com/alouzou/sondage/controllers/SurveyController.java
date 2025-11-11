@@ -1,5 +1,6 @@
 package com.alouzou.sondage.controllers;
 
+import com.alouzou.sondage.dto.QuestionDTO;
 import com.alouzou.sondage.dto.SurveyDTO;
 import com.alouzou.sondage.entities.Survey;
 import com.alouzou.sondage.entities.User;
@@ -54,6 +55,12 @@ public class SurveyController {
                 .map(SurveyDTO::fromEntity)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("{surveyId}/questions/with-votes")
+    public ResponseEntity<List<QuestionDTO>> getSurveyWithAllVotes(@PathVariable Long surveyId){
+        List<QuestionDTO> questions = surveyService.getSurveyQuestionsWithUserVotes(surveyId);
+        return ResponseEntity.ok(questions);
     }
 
     @GetMapping("/category/{categoryId}")

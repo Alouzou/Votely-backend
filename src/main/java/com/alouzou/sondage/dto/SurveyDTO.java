@@ -7,15 +7,17 @@ import com.alouzou.sondage.entities.User;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
+import lombok.*;
 
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class SurveyDTO {
     private Long id;
 
@@ -30,6 +32,9 @@ public class SurveyDTO {
     private String creatorName;
 
     @Getter
+    private Instant createdAt;
+
+    @Getter
     private String categoryName;
 
     @Getter
@@ -37,32 +42,6 @@ public class SurveyDTO {
     private Long categoryId;
     private List<QuestionDTO> questions;
 
-    public SurveyDTO(Long id, String title, Long creatorId, String creatorName, String categoryName, Long categoryId, List<QuestionDTO> questions) {
-        this.id = id;
-        this.title = title;
-        this.creatorId = creatorId;
-        this.creatorName = creatorName;
-        this.categoryName = categoryName;
-        this.categoryId = categoryId;
-        this.questions = questions;
-    }
-
-    public SurveyDTO() {
-    }
-
-    public SurveyDTO(Long id, String title, Long creatorId, Long categoryId) {
-        this.id = id;
-        this.title = title;
-        this.creatorId = creatorId;
-        this.categoryId = categoryId;
-    }
-    public SurveyDTO(Long id, String title, Long creatorId, Long categoryId, List<QuestionDTO> questions) {
-        this.id = id;
-        this.title = title;
-        this.creatorId = creatorId;
-        this.categoryId = categoryId;
-        this.questions = questions;
-    }
 
     public Survey toEntity(User creator, Category category) {
         Survey survey = new Survey();
@@ -85,9 +64,10 @@ public class SurveyDTO {
                 .questions(
                         survey.getQuestions()
                                 .stream()
-                                .map(QuestionDTO::fromEntity)
+                                .map(QuestionDTO::fromEntityWithVotes)
                                 .collect(Collectors.toList())
                 )
+                .createdAt(survey.getCreatedAt())
                 .build();
     }
 

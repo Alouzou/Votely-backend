@@ -6,13 +6,9 @@ import com.alouzou.sondage.dto.SurveyDTO;
 import com.alouzou.sondage.entities.*;
 import com.alouzou.sondage.exceptions.EntityNotFoundException;
 import com.alouzou.sondage.exceptions.ResourceAlreadyUsedException;
-import com.alouzou.sondage.repositories.CategoryRepository;
-import com.alouzou.sondage.repositories.SurveyRepository;
-import com.alouzou.sondage.repositories.UserRepository;
+import com.alouzou.sondage.repositories.*;
 import com.alouzou.sondage.services.SurveyService;
-import jakarta.persistence.EntityExistsException;
 import jakarta.transaction.Transactional;
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class SurveyServiceImpl implements SurveyService {
@@ -28,6 +25,13 @@ public class SurveyServiceImpl implements SurveyService {
 
     @Autowired
     private SurveyRepository surveyRepository;
+
+    @Autowired
+    private QuestionRepository questionRepository;
+
+    @Autowired
+    private VoteRepository voteRepository;
+
 
     @Autowired
     private CategoryRepository categoryRepository;
@@ -130,4 +134,14 @@ public class SurveyServiceImpl implements SurveyService {
         surveyRepository.deleteById(idSurvey);
 
     }
+
+    @Override
+    public List<QuestionDTO> getSurveyQuestionsWithUserVotes(Long surveyId) {
+
+        List<Question> questions = questionRepository.findBySurveyId(surveyId);
+        return questions.stream()
+                .map(QuestionDTO::fromEntityWithVotes)
+                .collect(Collectors.toList());
+    }
+
 }

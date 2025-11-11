@@ -1,5 +1,6 @@
 package com.alouzou.sondage.services;
 
+import com.alouzou.sondage.dto.QuestionDTO;
 import com.alouzou.sondage.dto.SurveyDTO;
 import com.alouzou.sondage.entities.Question;
 import com.alouzou.sondage.entities.Survey;
@@ -16,4 +17,6 @@ public interface SurveyService {
     List<Survey> findAll();
 
     void deleteSurvey(Long idSurvey);
+
+    List<QuestionDTO> getSurveyQuestionsWithUserVotes(Long surveyId);
 }
