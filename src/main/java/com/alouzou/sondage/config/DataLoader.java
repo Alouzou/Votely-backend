@@ -65,6 +65,12 @@ public class DataLoader implements CommandLineRunner {
                 .orElseGet(() -> categoryRepository.save(new Category("Voyage", true)));
         Category categoryGastronomie = categoryRepository.findByName("Gastronomie")
                 .orElseGet(() -> categoryRepository.save(new Category("Gastronomie", true)));
+        Category categoryPolitique = categoryRepository.findByName("Politique")
+                .orElseGet(() -> categoryRepository.save(new Category("Politique", true)));
+        Category categoryLifestyle = categoryRepository.findByName("Lifestyle")
+                .orElseGet(() -> categoryRepository.save(new Category("Lifestyle", true)));
+        Category categoryDivertissement = categoryRepository.findByName("Divertissement")
+                .orElseGet(() -> categoryRepository.save(new Category("Divertissement", true)));
 
         //log.info("✅ Catégories ajoutées !");
         //User creator = userService.getUserByEmail("creator@example.com").orElseThrow();
