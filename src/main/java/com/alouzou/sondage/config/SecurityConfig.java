@@ -1,6 +1,5 @@
 package com.alouzou.sondage.config;
 
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,29 +27,10 @@ public class SecurityConfig {
     @Autowired
     private JwtAuthentificationFilter jwtAuthentificationFilter;
 
-//    public class WebConfig implements WebMvcConfigurer {
-//        @Override
-//        public void addCorsMappings(CorsRegistry registry) {
-//            registry.addMapping("/api/**")
-//                    .allowedOrigins("http://localhost:4200")
-//                    .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-//                    .allowedHeaders("*")
-//                    .allowCredentials(true);
-//        }
-//    }
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .cors(Customizer.withDefaults())
-                .exceptionHandling(exception -> exception
-                        .accessDeniedHandler((request, response, accessDeniedException) -> {
-                            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                            response.setContentType("application/json");
-                            response.getWriter().write("Vous n'avez pas les permissions nécessaires pour accéder à cette ressource.");
-                        })
-                );
-        http
                 .authorizeHttpRequests(auth -> auth
                                 .requestMatchers("/api/auth/**").permitAll()
                                 .anyRequest().authenticated()

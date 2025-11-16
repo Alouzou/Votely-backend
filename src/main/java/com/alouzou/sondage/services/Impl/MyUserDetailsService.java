@@ -2,9 +2,7 @@ package com.alouzou.sondage.services.Impl;
 
 import com.alouzou.sondage.entities.User;
 import com.alouzou.sondage.entities.UserPrincipal;
-import com.alouzou.sondage.exceptions.EntityNotFoundException;
 import com.alouzou.sondage.repositories.UserRepository;
-import com.alouzou.sondage.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -20,7 +18,7 @@ public class MyUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(username)
-                .orElseThrow(() -> new EntityNotFoundException("Utilisateur : " + username +" non trouvé"));
+                .orElseThrow(() -> new UsernameNotFoundException("Utilisateur non trouvé : " + username));
         return new UserPrincipal(user);
     }
 }

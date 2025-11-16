@@ -42,13 +42,9 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request) {
-        try {
             LoginResponse response = authService.authenticate(request.getUsername(), request.getPassword());
             return ResponseEntity.ok(response);
 
-        } catch (AuthenticationException e) {
-            return ResponseEntity.status(401).body(Map.of("error", "Identifiants invalides"));
-        }
     }
 
 
