@@ -15,7 +15,7 @@ import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.util.Set;
+
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -87,7 +87,7 @@ public class AuthServiceTest {
         adminRole.setName(RoleName.ROLE_ADMIN);
 
         User user = new User();
-        user.setRoles(Set.of(adminRole));
+        user.setRole(adminRole);
 
         boolean result = authService.hasRole(user, RoleName.ROLE_ADMIN);
         assertTrue(result);
@@ -98,7 +98,7 @@ public class AuthServiceTest {
         userRole.setName(RoleName.ROLE_USER);
 
         User user = new User();
-        user.setRoles(Set.of(userRole));
+        user.setRole(userRole);
 
 
         boolean result = authService.hasRole(user, RoleName.ROLE_ADMIN);
