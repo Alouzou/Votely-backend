@@ -38,33 +38,59 @@ public class UserServiceImpl implements UserService {
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
 
+//    @Override
+//    public User createUser(String username, String email, String password, Set<String> rolesNames) {
+//        log.info("Création d'un nouvel utilisateur : {}", email);
+//        if (userRepository.findByEmail(email).isPresent()) {
+//            throw new ResourceAlreadyUsedException("L'email est déjà utilisé !");
+//        }
+//
+//        if (userRepository.findByUsername(username).isPresent()) {
+//            throw new ResourceAlreadyUsedException("Le username est dèja utilisé !");
+//        }
+//        User user = new User();
+//        user.setUsername(username);
+//        user.setEmail(email);
+//        user.setPassword(passwordEncoder.encode(password));
+//
+//        Set<Role> roles = new HashSet<>();
+//        rolesNames.forEach(roleName -> {
+//            try {
+//                RoleName enumRoleName = RoleName.valueOf(roleName.toUpperCase());
+//                Role role = roleRepository.findByName(enumRoleName)
+//                        .orElseThrow(() -> new EntityNotFoundException("Rôle non trouvé : " + roleName));
+//                roles.add(role);
+//            } catch (IllegalArgumentException e) {
+//                throw new EntityNotFoundException("Rôle invalide : " + roleName);
+//            }
+//        });
+//        user.setRoles(roles);
+//        return userRepository.save(user);
+//    }
+
     @Override
-    public User createUser(String username, String email, String password, Set<String> rolesNames) {
-        log.info("Création d'un nouvel utilisateur : {}", email);
-        if (userRepository.findByEmail(email).isPresent()) {
+    public User createUser(UserDTO userDTO) {
+        log.info("Création d'un nouvel utilisateur : {}", userDTO.getUsername());
+        if (userRepository.findByEmail(userDTO.getEmail()).isPresent()) {
             throw new ResourceAlreadyUsedException("L'email est déjà utilisé !");
         }
 
-        if (userRepository.findByUsername(username).isPresent()) {
+        if (userRepository.findByUsername(userDTO.getUsername()).isPresent()) {
             throw new ResourceAlreadyUsedException("Le username est dèja utilisé !");
         }
-        User user = new User();
-        user.setUsername(username);
-        user.setEmail(email);
-        user.setPassword(passwordEncoder.encode(password));
 
-        Set<Role> roles = new HashSet<>();
-        rolesNames.forEach(roleName -> {
-            try {
-                RoleName enumRoleName = RoleName.valueOf(roleName.toUpperCase());
-                Role role = roleRepository.findByName(enumRoleName)
-                        .orElseThrow(() -> new EntityNotFoundException("Rôle non trouvé : " + roleName));
-                roles.add(role);
-            } catch (IllegalArgumentException e) {
-                throw new EntityNotFoundException("Rôle invalide : " + roleName);
-            }
-        });
-        user.setRoles(roles);
+        if(userDTO.getRole() == null || userDTO.getRole().getId() == null){
+            throw new IllegalArgumentException("Le rôle est obligatoire");
+        }
+
+        Role role = roleRepository.findById(userDTO.getRole().getId())
+                .orElseThrow(() -> new EntityNotFoundException("Rôle non trouvé"));
+
+        User user = UserDTO.toEntity(userDTO);
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        user.setRole(role);
+        System.out.println("User recu : " + user);
+        log.info("Utilisateur créé avec succès : {}", user.getEmail());
         return userRepository.save(user);
     }
 
@@ -81,17 +107,23 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean deleteUser(Long id) {
         log.info("Suppression de l'utilisateur avec l'ID : {}", id);
-        if (userRepository.existsById(id)) {
-            User userPrincipal = authService.getCurrentUser();
-            if (userRepository.findById(id).get().getId().compareTo(userPrincipal.getId()) == 0) {
-                throw new ForbiddenActionException("Un administrateur ne peut pas se supprimer lui-même.");
-            }
-            userRepository.deleteById(id);
-            log.info("SUCCES - Suppression de l'utilisateur avec l'ID : {}", id);
-            return true;
+
+        if (!userRepository.existsById(id)) {
+            log.warn("Utilisateur avec l'ID {} n'existe pas", id);
+            return false;
         }
-        log.info("ÉCHEC - Suppression de l'utilisateur avec l'ID : {}", id);
-        return false;
+
+        User currentUser = authService.getCurrentUser();
+        User userToDelete = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Utilisateur non trouvé"));
+
+        if (userToDelete.getId().equals(currentUser.getId())) {
+            throw new ForbiddenActionException("Vous ne pouvez pas vous supprimer vous-même");
+        }
+
+        userRepository.deleteById(id);
+        log.info("Utilisateur avec l'ID {} supprimé avec succès", id);
+        return true;
     }
 
     @Override
@@ -127,7 +159,7 @@ public class UserServiceImpl implements UserService {
                 user.setEmail(userDTO.getEmail());
             }
             if (userDTO.getPassword() != null && !userDTO.getPassword().trim().isEmpty()) {
-                user.setPassword(userDTO.getPassword());
+                user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
             }
             return userRepository.save(user);
         }

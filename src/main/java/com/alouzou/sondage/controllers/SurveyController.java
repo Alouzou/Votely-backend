@@ -75,7 +75,7 @@ public class SurveyController {
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'CREATOR')")
-    @GetMapping("/creator/{creatorId}")
+    @GetMapping("creator/{creatorId}")
     public ResponseEntity<List<SurveyDTO>> getSurveysByCreator(@PathVariable Long creatorId) {
         List<SurveyDTO> surveys = surveyService.getSurveysByCreator(creatorId)
                 .stream()
@@ -95,8 +95,8 @@ public class SurveyController {
                 .ok(surveys);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/delete/{idSurvey}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CREATOR')")
+    @DeleteMapping("/{idSurvey}")
     public ResponseEntity<Void> deleteSurvey(@PathVariable("idSurvey") Long idSurvey) {
         surveyService.deleteSurvey(idSurvey);
         return ResponseEntity.noContent().build();

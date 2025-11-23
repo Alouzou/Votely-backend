@@ -1,7 +1,6 @@
 package com.alouzou.sondage.dto;
 
 import com.alouzou.sondage.entities.Role;
-import com.alouzou.sondage.entities.RoleName;
 import com.alouzou.sondage.entities.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -11,8 +10,6 @@ import jakarta.validation.constraints.*;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 
 @Data
@@ -45,8 +42,9 @@ public class UserDTO {
 
     private Date createdAt;
 
+    @NotNull(groups = OnCreate.class, message = "Le rôle est obligatoire")
     @Null(groups = UserDTO.OnUpdate.class, message = "Les rôles ne peuvent pas être modifiés.")
-    private Set<String> roles;
+    private Role role;
 
     public static UserDTO fromEntity(User user) {
         if (user == null) {
@@ -59,10 +57,7 @@ public class UserDTO {
                 .email(user.getEmail())
                 .password(user.getPassword())
                 .createdAt(user.getCreatedAt())
-                .roles(user.getRoles()
-                        .stream()
-                        .map(role -> role.getName().name())
-                        .collect(Collectors.toSet()))
+                .role(user.getRole())
                 .build();
 
     }
@@ -77,12 +72,7 @@ public class UserDTO {
         user.setUsername(dto.getUsername());
         user.setEmail(dto.getEmail());
         user.setPassword(dto.getPassword());
-        if(dto.getRoles() != null){
-            Set<Role> roles = dto.getRoles().stream()
-                    .map(roleName -> new Role(RoleName.valueOf(roleName)))
-                    .collect(Collectors.toSet());
-            user.setRoles(roles);
-        }
+        user.setRole(dto.getRole());
         return user;
     }
 

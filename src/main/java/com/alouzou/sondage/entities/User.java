@@ -2,11 +2,8 @@ package com.alouzou.sondage.entities;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 
 @Entity
@@ -25,18 +22,16 @@ public class User {
     @Column
     private Date createdAt;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles = new HashSet<>();
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "role_id", nullable = false)
+    private Role role;
 
-    public User(Long id, String username, String email, String password, Set<Role> roles) {
+    public User(Long id, String username, String email, String password, Role role) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.password = password;
-        this.roles = roles;
+        this.role = role;
     }
 
     public User() {
@@ -56,13 +51,13 @@ public class User {
         this.email = email;
     }
 
-    public User(Long id, String username, String email, String password, Date createdAt, Set<Role> roles) {
+    public User(Long id, String username, String email, String password, Date createdAt, Role role) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.password = password;
         this.createdAt = createdAt;
-        this.roles = roles;
+        this.role = role;
     }
 
     public Date getCreatedAt() {
@@ -105,11 +100,11 @@ public class User {
         this.password = password;
     }
 
-    public Set<Role> getRoles() {
-        return roles;
+    public Role getRole() {
+        return role;
     }
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
+    public void setRole(Role role) {
+        this.role = role;
     }
 }

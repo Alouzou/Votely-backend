@@ -12,7 +12,8 @@ import java.util.Optional;
 import java.util.Set;
 
 public interface UserService {
-    User createUser(String username, String email, String password, Set<String> rolesNames);
+//    User createUser(String username, String email, String password, Set<String> rolesNames);
+    User createUser(UserDTO userDTO);
     Optional<User> getUserByEmail(String email);
     List<User> getAllUsers();
     boolean deleteUser(Long id);

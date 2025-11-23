@@ -5,6 +5,7 @@ import com.alouzou.sondage.dto.QuestionDTO;
 import com.alouzou.sondage.dto.SurveyDTO;
 import com.alouzou.sondage.entities.*;
 import com.alouzou.sondage.exceptions.EntityNotFoundException;
+import com.alouzou.sondage.exceptions.ForbiddenActionException;
 import com.alouzou.sondage.exceptions.ResourceAlreadyUsedException;
 import com.alouzou.sondage.repositories.*;
 import com.alouzou.sondage.services.SurveyService;
@@ -31,6 +32,9 @@ public class SurveyServiceImpl implements SurveyService {
 
     @Autowired
     private VoteRepository voteRepository;
+
+    @Autowired
+    private AuthService authService;
 
 
     @Autowired
@@ -129,10 +133,18 @@ public class SurveyServiceImpl implements SurveyService {
 
     @Override
     public void deleteSurvey(Long idSurvey) {
-        surveyRepository.findById(idSurvey)
+        Survey survey = surveyRepository.findById(idSurvey)
                 .orElseThrow(() -> new EntityNotFoundException("Sondage non trouvé avec id : " + idSurvey));
-        surveyRepository.deleteById(idSurvey);
 
+        User currentUser = authService.getCurrentUser();
+
+        boolean isAdmin = authService.hasRole(currentUser, RoleName.ROLE_ADMIN);
+        boolean isOwner = currentUser.getId().equals(survey.getCreator().getId());
+
+        if(!isOwner && !isAdmin) {
+            throw new ForbiddenActionException("Vous ne pouvez supprimer que vos propres sondages");
+        }
+        surveyRepository.deleteById(idSurvey);
     }
 
     @Override

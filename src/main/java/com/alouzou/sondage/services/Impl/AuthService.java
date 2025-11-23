@@ -41,8 +41,7 @@ public class AuthService {
     }
 
     public boolean hasRole(User user, RoleName roleName){
-        return user.getRoles().stream()
-                .anyMatch(role -> role.getName().equals(roleName));
+        return user.getRole().getName().equals(roleName);
     }
 
     public LoginResponse authenticate(String username, String password){
@@ -50,13 +49,11 @@ public class AuthService {
                 new UsernamePasswordAuthenticationToken(username, password)
         );
         String token = jwtUtil.generateToken(username);
-
         User user = userRepository.findByEmail(username)
                 .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
 
         UserDTO userDTO = UserDTO.fromEntity(user);
         userDTO.setPassword(null);
-
         return LoginResponse.builder()
                 .token(token)
                 .user(userDTO)

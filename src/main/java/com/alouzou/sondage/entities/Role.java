@@ -1,10 +1,6 @@
 package com.alouzou.sondage.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Table(name = "roles")
@@ -14,12 +10,20 @@ public class Role {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(length = 20)
+    @Column(length = 20, name = "name", nullable = false, unique = true)
     private RoleName name;
 
     public Role(Long id, RoleName name) {
         this.id = id;
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "Role{" +
+                "id=" + id +
+                ", name=" + name +
+                '}';
     }
 
     public Role(RoleName name) {
