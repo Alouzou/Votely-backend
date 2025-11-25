@@ -2,11 +2,9 @@ package com.alouzou.sondage.services.Impl;
 
 import com.alouzou.sondage.dto.ChoiceDTO;
 import com.alouzou.sondage.dto.QuestionDTO;
-import com.alouzou.sondage.entities.Choice;
-import com.alouzou.sondage.entities.Question;
-import com.alouzou.sondage.entities.Survey;
-import com.alouzou.sondage.entities.User;
+import com.alouzou.sondage.entities.*;
 import com.alouzou.sondage.exceptions.EntityNotFoundException;
+import com.alouzou.sondage.exceptions.ForbiddenActionException;
 import com.alouzou.sondage.repositories.QuestionRepository;
 import com.alouzou.sondage.repositories.SurveyRepository;
 import com.alouzou.sondage.repositories.UserRepository;
@@ -21,6 +19,8 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Autowired
     QuestionRepository questionRepository;
+    @Autowired
+    private AuthService authService;
 
     @Autowired
     UserRepository userRepository;
@@ -42,5 +42,28 @@ public class QuestionServiceImpl implements QuestionService {
                         .collect(Collectors.toList()));
 
         return questionRepository.save(savedQuestion);
+    }
+
+    @Override
+    public void deleteQuestionById(Long questionId, Long surveyId) {
+        Question question = questionRepository.findQuestionById(questionId).orElseThrow(
+                () -> new EntityNotFoundException("Question non trouvé !")
+        );
+
+        Survey survey = surveyRepository.findSurveyById(surveyId).orElseThrow(
+                () -> new EntityNotFoundException("Sondage non trouvé avec l'ID : " + surveyId)
+        );
+
+        User currentUser = authService.getCurrentUser();
+
+        boolean isAdmin = authService.hasRole(currentUser, RoleName.ROLE_ADMIN);
+        boolean isOwner = currentUser.getId().equals(survey.getCreator().getId());
+
+        if(!isAdmin && !isOwner){
+            throw new ForbiddenActionException("Vous ne pouvez supprimer cette question !");
+        }
+
+        questionRepository.deleteById(questionId);
+
     }
 }

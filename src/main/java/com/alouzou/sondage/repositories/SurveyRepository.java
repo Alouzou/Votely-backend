@@ -16,6 +16,7 @@ public interface SurveyRepository extends JpaRepository<Survey, Long> {
     Logger logger = LoggerFactory.getLogger(SurveyRepository.class);
 
     Optional<Survey> findByTitle(String title);
+    Optional<Survey> findSurveyById(Long surveyId);
     List<Survey> findByCategory_Id(Long categoryId);
     List<Survey> findByCategory(Category category);
     List<Survey> findByCreator(User creator);
