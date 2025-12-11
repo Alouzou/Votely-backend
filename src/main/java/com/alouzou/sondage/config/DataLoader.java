@@ -51,9 +51,9 @@ public class DataLoader implements CommandLineRunner {
 
         Map<String, Category> categories = createCategories();
 
-        createDemoSurveys(categories);
+        //createDemoSurveys(categories);
 
-        simulateVotes();
+        //simulateVotes();
 
         log.info("✅ Données de démonstration chargées avec succès !");
         log.info("📋 Comptes de test disponibles pour les recruteurs :");
